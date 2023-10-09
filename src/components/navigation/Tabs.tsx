@@ -1,8 +1,8 @@
 import { Animated, NativeModules, StyleSheet, Text, Touchable, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import tw from 'twrnc';
 import SvgComponent from '../svg/SvgComponent';
-import HouseSvg from '../svg/icons/houseSvg';
+import HouseSvg from '../svg/icons/HouseSvg';
 import ListSvg from '../svg/icons/ListSvg';
 import HeartSvg from '../svg/icons/HeartSvg';
 import UserSvg from '../svg/icons/UserSvg';
@@ -13,114 +13,171 @@ const {UIManager} = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
-const Tabs = ({screen}:{screen?: string}) => {
+interface Props {
+  screen: string;
+  setScreen: any;
+}
+
+const Tabs = ({screen, setScreen}: Props) => {
+
+  // const [ screen, setScreen ] = useState(props.screen || '')  // Initial screen
 
   // const [ background, setBackground ] = useState<string>("bg-violet-400")
+  const [ addScale ] = useState(new Animated.Value(0.95))  // Initial value for scale: 0
+  
 
-  const homeOpacity = useRef(new Animated.Value(0.80)).current;
+  const homeOpacity = useRef(new Animated.Value(0.40)).current;
   const homeScale = useRef(new Animated.Value(1)).current;
 
-  const listOpacity = useRef(new Animated.Value(0.80)).current;
+  const listOpacity = useRef(new Animated.Value(0.40)).current;
   const listScale = useRef(new Animated.Value(1)).current;
 
-  const favoriteOpacity = useRef(new Animated.Value(0.80)).current;
+  const favoriteOpacity = useRef(new Animated.Value(0.40)).current;
   const favoriteScale = useRef(new Animated.Value(1)).current;
 
-  const userOpacity = useRef(new Animated.Value(0.80)).current;
+  const userOpacity = useRef(new Animated.Value(0.40)).current;
   const userScale = useRef(new Animated.Value(1)).current;
 
-  const [ addScale ] = useState(new Animated.Value(0.95))  // Initial value for scale: 0
-
-  const addscreen = () => {
-
-    Animated.spring(addScale, { toValue: 1.1, friction: 3, useNativeDriver: false }).start();
-
-
-  }
+  
 
 
 
   function pushToHome() {
 
-    Animated.timing(homeOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(homeScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
-
-    Animated.timing(listOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    Animated.timing(favoriteOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    Animated.timing(userOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    console.log('homeScreen')
+    ativatedButtonAnimate('homeScreen')
+    setScreen('homeScreen')
 
   }
 
   function pushToList() {
 
-    Animated.timing(homeOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+    ativatedButtonAnimate('listScreen')
+    setScreen('listScreen')
 
-    Animated.timing(listOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(listScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
+  }
 
-    Animated.timing(favoriteOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  const pushToAdd = () => {
 
-    Animated.timing(userOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    console.log('homeScreen')
+    ativatedButtonAnimate('addScreen')
 
   }
 
   function pushToFavorite() {
 
-    Animated.timing(homeOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    Animated.timing(listOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    Animated.timing(favoriteOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(favoriteScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
-
-    Animated.timing(userOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    console.log('homeScreen')
+    ativatedButtonAnimate('favoriteScreen')
 
   }
 
   function pushToUser() {
 
-    Animated.timing(homeOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+    ativatedButtonAnimate('userScreen')
 
-    Animated.timing(listOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  }
 
-    Animated.timing(favoriteOpacity, { toValue: 0.80, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  function ativatedButtonAnimate(screen: string) {
 
-    Animated.timing(userOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
-    Animated.spring(userScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
+    if(!screen) return;
 
-    Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+    if(screen == 'homeScreen') {
 
-    console.log('homeScreen')
+      Animated.timing(homeOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(homeScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+
+    }
+
+    if(screen == 'listScreen') {
+
+      Animated.timing(homeOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(listOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(listScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+
+    }
+
+    if(screen == 'addScreen') {
+
+      Animated.spring(addScale, { toValue: 1.1, friction: 3, useNativeDriver: false }).start();
+
+      Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+
+    }
+
+    if(screen == 'favoriteScreen') {
+
+      Animated.timing(homeOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(favoriteOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(favoriteScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+
+    }
+
+    if(screen == 'userScreen') {
+
+      Animated.timing(homeOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.timing(userOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
+      Animated.spring(userScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
+  
+      Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+
+    }
+
+    return;
 
   }
 
 
+
+  useEffect(()=>{
+
+    console.log('screen:', screen)
+
+    ativatedButtonAnimate(screen)
+
+  },[])
 
   return (
 
@@ -149,7 +206,7 @@ const Tabs = ({screen}:{screen?: string}) => {
       </View>
 
       {/* add button */}
-      <TouchableWithoutFeedback onPress={addscreen}>
+      <TouchableWithoutFeedback onPress={pushToAdd}>
 
         <Animated.View style={{
           position: 'relative',
