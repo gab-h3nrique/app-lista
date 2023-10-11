@@ -8,6 +8,7 @@ import HeartSvg from '../svg/icons/HeartSvg';
 import UserSvg from '../svg/icons/UserSvg';
 import PlusSvg from '../svg/icons/PlusSvg';
 import HomeScreen from '../../screens/HomeScreen';
+import { useSelectedList } from '../../context/SelectedListProvider';
 
 const {UIManager} = NativeModules;
 
@@ -38,7 +39,7 @@ const Tabs = ({screen, setScreen}: Props) => {
   const userOpacity = useRef(new Animated.Value(0.40)).current;
   const userScale = useRef(new Animated.Value(1)).current;
 
-  
+  const { selectedList, setSelectedList } = useSelectedList()
 
 
 
@@ -59,6 +60,7 @@ const Tabs = ({screen, setScreen}: Props) => {
   const pushToAdd = () => {
 
     ativatedButtonAnimate('addScreen')
+    setSelectedList({...selectedList, screenOpen: true})
 
   }
 

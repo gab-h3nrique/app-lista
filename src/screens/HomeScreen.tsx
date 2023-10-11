@@ -5,7 +5,7 @@ import Tabs from '../components/navigation/Tabs';
 import ScreenLayout from '../components/ScreenLayout';
 import SvgComponent from '../components/svg/SvgComponent';
 import NewsScreen from './news/NewsScreen';
-import ListScreen from './list/ListScreen';
+import ListScreen from './lists/ListScreen';
 
 const HomeScreen = () => {
 

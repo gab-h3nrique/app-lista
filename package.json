@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android-1": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "prepare": "mkdir android/app/src/main/assets",
+    "build": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
@@ -13,6 +14,7 @@
   "dependencies": {
     "react": "18.2.0",
     "react-native": "0.72.3",
+    "react-native-mmkv": "^2.10.2",
     "react-native-svg": "^13.9.0",
     "twrnc": "^3.6.1"
   },

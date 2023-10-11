@@ -22,30 +22,33 @@ const ListScreen = () => {
       {
         listArray.length > 0 ? 
       
-          listArray.map(({name, price, itens}) =>{
+          listArray.map(({name, price, itens}, index) =>{
 
             return (
-              
-              <View style={tw`p-3 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white`}>
 
-                <ShoppingSvg height={35} width={35} fill={'#CBD5E1'}/>
-        
-                <View style={tw`gap-2 flex`}>
-        
-                  <Text style={tw`text-slate-400 text-[.8rem] font-bold`}>{name}</Text>
-        
-                  <View style={tw`gap-2 flex flex-row`}>
-        
-                    <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>{itens} itens</Text>
-                    <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>R${price}1</Text>
-        
+              <React.Fragment key={index}>
+                <View style={tw`p-3 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white`}>
+
+                  <ShoppingSvg height={35} width={35} fill={'#CBD5E1'}/>
+          
+                  <View style={tw`gap-2 flex`}>
+          
+                    <Text style={tw`text-slate-400 text-[.8rem] font-bold`}>{name}</Text>
+          
+                    <View style={tw`gap-2 flex flex-row`}>
+          
+                      <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>{itens} itens</Text>
+                      <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>R${price}1</Text>
+          
+                    </View>
+          
                   </View>
+          
+                  <ShoppingSvg height={25} width={25} fill={'#CBD5E1'} marginLeft={"auto"}/>
         
                 </View>
-        
-                <ShoppingSvg height={25} width={25} fill={'#CBD5E1'} marginLeft={"auto"}/>
-      
-              </View>
+              </React.Fragment>
+              
             )
 
           })
