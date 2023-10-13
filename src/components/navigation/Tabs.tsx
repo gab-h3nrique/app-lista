@@ -8,7 +8,8 @@ import HeartSvg from '../svg/icons/HeartSvg';
 import UserSvg from '../svg/icons/UserSvg';
 import PlusSvg from '../svg/icons/PlusSvg';
 import HomeScreen from '../../screens/HomeScreen';
-import { useSelectedList } from '../../context/SelectedListProvider';
+import { useSelectedList } from '../../context/NavigationProvider';
+import { storage } from '../../libs/storage';
 
 const {UIManager} = NativeModules;
 
@@ -61,18 +62,21 @@ const Tabs = ({screen, setScreen}: Props) => {
 
     ativatedButtonAnimate('addScreen')
     setSelectedList({...selectedList, screenOpen: true})
+    storage.clearAll()
 
   }
 
   function pushToFavorite() {
 
     ativatedButtonAnimate('favoriteScreen')
+    setScreen('')
 
   }
 
   function pushToUser() {
 
     ativatedButtonAnimate('userScreen')
+    setScreen('')
 
   }
 
@@ -183,7 +187,7 @@ const Tabs = ({screen, setScreen}: Props) => {
 
   return (
 
-    <View style={tw` p-4 flex flex-row items-center justify-between gap-2 w-full h-[8%] bg-white rounded-t-[35px]`}>
+    <View style={tw`bottom-0 p-4 flex flex-row items-center justify-between gap-2 w-full h-[8%] bg-white rounded-t-[35px] absolute`}>
       
 
 

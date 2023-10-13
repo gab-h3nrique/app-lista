@@ -1,9 +1,8 @@
-import { View, Text, TouchableWithoutFeedback, TextInput, Image, BackHandler } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, TouchableWithoutFeedback, TextInput, Image, BackHandler, NativeModules, Animated } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import tw from 'twrnc';
 import { storage } from '../../libs/storage';
-import { useSelectedList } from '../../context/SelectedListProvider';
-import ArrowSvg from '../../components/svg/icons/ArrowSvg';
+import { useSelectedList } from '../../context/NavigationProvider';
 import ShoppingSvg from '../../components/svg/icons/ShoppingSvg';
 import PlusSvg from '../../components/svg/icons/PlusSvg';
 import CategoryScreen from './category/CategoryScreen';
@@ -15,17 +14,35 @@ import CheckSolidSvg from '../../components/svg/icons/CheckSolidSvg';
 import CheckOutSvg from '../../components/svg/icons/CheckOutSvg';
 import EditItemScreen from './editItem/EditItemScreen';
 
+const { UIManager } = NativeModules;
 
-const SelectedListScreen = () => {
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
-  const { selectedList, setSelectedList } = useSelectedList()
+interface Props {
+  open: boolean
+  onClose: any
+  selectedList: any
+  setSelectedList: any
+}
 
-  function goBack() {
+const SelectedListScreen = ({open, onClose, selectedList, setSelectedList}: Props) => {
 
-    console.log('closing selectedListScreen')
-    setSelectedList({...selectedList, screenOpen: false})
+  // ------------animation--------------//
+  const positionScreen = useRef(new Animated.Value(400)).current;
 
+  function changeScreen() {
+
+    if(open) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
+    if(!open) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
+  
   }
+  // ------------animation--------------//
+
+  const teste = JSON.parse(storage.getString('userList') || "[]")
+  
+  // console.log('----------------------------------------', teste)
+
+  // const { selectedList, setSelectedList } = useSelectedList()
 
   // storage.getBoolean('openSelectedListScreen')
 
@@ -118,13 +135,14 @@ const SelectedListScreen = () => {
 
   }
 
+  
   function onBackPress() {
 
     console.debug('############### back button pressed ###############')
 
-    /// close first screen after open a list
+    /// close selected list screen
     if(step === 0) {
-      goBack()
+      onClose()
     } 
 
     /// close categories screen
@@ -156,30 +174,32 @@ const SelectedListScreen = () => {
   };
 
   BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
+  
   useEffect(()=>{
+    
+    changeScreen()
 
-    if(!selectedList.screenOpen) BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
 
-  },[selectedList.screenOpen])
-
+  },[open])
+  
   return (
 
-    <View style={tw`top-0 ${selectedList.screenOpen ? 'flex' : 'hidden'} bg-slate-200 w-full h-full absolute`}>
+    <Animated.View style={[tw`top-0 z-1 bg-slate-200 w-full h-full absolute`, { transform: [{translateX: positionScreen}], }]}>
       <View style={tw`w-full h-full relative`}>
 
         <View style={tw`p-3 justify-center items-center flex flex-row w-full relative`}>
 
           <View style={tw`left-2 top-5 w-9 h-8 rounded-[.6rem] bg-slate-400 flex items-center justify-center absolute`} >
-            <TouchableWithoutFeedback onPress={goBack}>
+            <TouchableWithoutFeedback onPress={onClose}>
               <ChevronSvg height={20} width={20} fill={'white'} style={{ transform: [{ rotateY: '180deg' }] }}/>
             </TouchableWithoutFeedback>
           </View>
 
           <TextInput
-          style={tw`text-slate-500 text-center font-bold text-[1.2rem] mt-1`}
-          onChangeText={(event)=> setSelectedList({...selectedList, list: {...selectedList.list, name: event} })}
-          value={selectedList.list.name}
+          style={tw`text-slate-500 text-center font-bold text-[1.2rem]`}
+          onChangeText={(event)=> setSelectedList({...selectedList, name: event})}
+          value={selectedList?.name}
           placeholder="Minha nova lista"
           />
 
@@ -268,7 +288,7 @@ const SelectedListScreen = () => {
         <EditItemScreen open={editScreenOpen} onClose={()=> {setEditScreenOpen(false), selectItem(null)}} item={selectedItem || {}} onSave={savingEditedItem} onRemove={removingEditedItem}/>
       
       </View>
-    </View>
+    </Animated.View>
 
   )
 }

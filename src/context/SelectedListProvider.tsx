@@ -9,7 +9,7 @@ export const useSelectedList = ():any => {
 export const SelectedListProvider = ({ children }:any) => {
 
 
-    const [selectedList, setSelectedList] = useState<any>({ screenOpen: true, list: {} });
+    const [selectedList, setSelectedList] = useState<any>({ screenOpen: false, list: {} });
 
     return (
 

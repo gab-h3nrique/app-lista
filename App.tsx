@@ -1,15 +1,19 @@
 
-import React from 'react';
-import tw from 'twrnc';
-import { SafeAreaView, View } from 'react-native';
+import React, { useState } from 'react';
 import HomeScreen from './src/screens/HomeScreen';
-import SelectedListScreen from './src/screens/list/SelectedListScreen';
-import { SelectedListProvider } from './src/context/SelectedListProvider';
+// import { SelectedListProvider } from './src/context/NavigationProvider';
 import { storage } from './src/libs/storage';
+import Layout from './src/components/Layout';
+import Tabs from './src/components/navigation/Tabs';
+import ListScreen from './src/screens/lists/ListScreen';
+import Stack, { NavigationProvider } from './src/context/NavigationProvider';
+import { View } from 'react-native';
+import { Text } from 'react-native-svg';
 
 
 
 function App(): JSX.Element {
+
 
   storage.set('categories', JSON.stringify([
     {id: null, name:'Pão', image: "https://cdn-icons-png.flaticon.com/512/3014/3014538.png", itens: [
@@ -18,53 +22,37 @@ function App(): JSX.Element {
     ]},
   ]))
 
-  const teste = JSON.parse(storage.getString('categories') as any)
-
-  console.log('storage:', teste[0].itens[0])
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const [screen, setScreen] = useState<string>('homeScreen')
 
   return (
 
-    <SelectedListProvider>
+    <Layout>
 
-      <View style={tw`bg-slate-200`}>
-        <SafeAreaView style={tw`bg-slate-200 flex relative`}>
+      <NavigationProvider>
+        <Stack name="A" component={<Text>a</Text>} />
+        <Stack name="B" component={<Text>b</Text>} />
+      </NavigationProvider>
 
-            <HomeScreen/>
+      {/* <SelectedListProvider>
 
-            <SelectedListScreen/>
+        <HomeScreen open={screen == 'homeScreen' ? true : false }/>
+        <ListScreen open={screen == 'listScreen' ? true : false }/>
 
-        </SafeAreaView>
-      </View>
-      
-    </SelectedListProvider>
+        <Tabs screen={screen} setScreen={setScreen}/>
 
+      </SelectedListProvider> */}
+
+    </Layout>
 
   );
 
 }
 
-
+// export const Teste = ({ name, component }:{ name:"string", component: React.FC}) => {
+//   return <Text>a</Text>
+// }
 
 export default App;

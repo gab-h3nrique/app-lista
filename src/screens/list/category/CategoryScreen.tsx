@@ -6,6 +6,9 @@ import { storage } from '../../../libs/storage';
 import ShoppingSvg from '../../../components/svg/icons/ShoppingSvg';
 import ChevronSvg from '../../../components/svg/icons/ChevronSvg';
 
+const { UIManager } = NativeModules;
+
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 interface Props {
 
   open: boolean;
@@ -14,15 +17,11 @@ interface Props {
 
 }
 
-const {UIManager} = NativeModules;
-
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
-
 
 const CategoryScreen = ({ open, onClose, selectCategory }: Props) => {
 
   // ------------animation--------------//
-  const positionScreen = useRef(new Animated.Value(0)).current;
+  const positionScreen = useRef(new Animated.Value(400)).current;
 
   function changeScreen() {
 

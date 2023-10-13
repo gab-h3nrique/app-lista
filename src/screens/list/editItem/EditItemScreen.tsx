@@ -78,7 +78,7 @@ const EditItemScreen = ({ open, onClose, item, onSave, onRemove }: Props) => {
 
     changeScreen()
 
-  },[open, item])
+  },[open])
 
 
   return (

@@ -2,7 +2,12 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import tw from 'twrnc';
 
-const ScreenLayout = ({children}:any) => {
+export interface Props {
+  page: string;
+  children: React.ReactNode
+}
+
+const ScreenLayout = ({children}: Props) => {
   return (
 
     <View style={tw`w-full h-[92%]`}>
