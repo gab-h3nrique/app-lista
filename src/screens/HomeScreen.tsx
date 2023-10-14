@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } fr
 import React, { useState } from 'react'
 import tw from 'twrnc';
 import Tabs from '../components/navigation/Tabs';
-import ScreenLayout from '../components/ScreenLayout';
+import ScreenLayout from '../components/AnimatedScreen';
 import SvgComponent from '../components/svg/SvgComponent';
 import NewsScreen from './news/NewsScreen';
 import ListScreen from './lists/ListScreen';

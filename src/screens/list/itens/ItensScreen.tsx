@@ -1,19 +1,16 @@
-import { View, Text, TouchableWithoutFeedback, NativeModules, Animated, Image, StyleSheet, BackHandler } from 'react-native'
-import React, { useEffect, useRef } from 'react'
+import { View, Text, TouchableWithoutFeedback, NativeModules, Animated, Image } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import tw from 'twrnc';
-import ArrowSvg from '../../../components/svg/icons/ArrowSvg';
-import { storage } from '../../../libs/storage';
-import ShoppingSvg from '../../../components/svg/icons/ShoppingSvg';
 import ChevronSvg from '../../../components/svg/icons/ChevronSvg';
 
 import CookieSvg from '../../../components/svg/icons/CookieSvg'
+import { useNavigation } from '../../../context/NavigationProvider';
+import { Category, Item, Product, Storage } from '../../../libs/storage';
 
 interface Props {
 
-  open: boolean;
-  onClose: any;
-  itens: any[]
-  setItem: any;
+  category: Category | null;
+  selectItem: any;
 
 }
 
@@ -22,30 +19,35 @@ const {UIManager} = NativeModules;
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 
-const ItensScreen = ({ open, onClose, itens, setItem }: Props) => {
+const ItensScreen = ({ category, selectItem }: Props) => {
 
+  const { navigate, screens } = useNavigation()
   // ------------animation--------------//
   const positionScreen = useRef(new Animated.Value(0)).current;
 
   function changeScreen() {
 
-    if(open) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
-    if(!open) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
+    if(navigate.isOpen('ItensScreen')) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
+    if(!navigate.isOpen('ItensScreen')) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
   
   }
   // ------------animation--------------//
 
-  
+  const [ itens, setItens ] = useState<Product[]>()
+
+  function getItens() {
+
+    if(category && category.id) setItens(()=> Storage.Product.getByCategory(category.id))
+
+  }
 
 
   useEffect(()=>{
 
-    if(open) console.log('opening itensScreen')
-    if(!open) console.log('closing itensScreen')
-    
     changeScreen()
+    getItens()
 
-  },[open])
+  },[screens, category])
 
   return (
 
@@ -56,7 +58,7 @@ const ItensScreen = ({ open, onClose, itens, setItem }: Props) => {
         <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
           <View style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 flex items-center justify-center absolute`} >
-            <TouchableWithoutFeedback onPress={onClose}>
+            <TouchableWithoutFeedback onPress={()=> navigate.close('ItensScreen')}>
               <ChevronSvg height={20} width={20} fill={'white'} style={{ transform: [{ rotateY: '180deg' }] }}/>
             </TouchableWithoutFeedback>
           </View>
@@ -67,14 +69,14 @@ const ItensScreen = ({ open, onClose, itens, setItem }: Props) => {
         <View style={tw`gap-4 flex justify-start items-center`}>
 
           {
-            itens.length > 0 ? 
+            itens && itens.length > 0 ? 
 
-              itens.map(( item: any, index: number) =>{
+              itens.map(( item, index: number) =>{
 
                 return (
 
                   <React.Fragment key={index}>
-                    <TouchableWithoutFeedback onPress={() => setItem(item)}>
+                    <TouchableWithoutFeedback onPress={() => selectItem(item)}>
 
                       <View style={tw`p-3 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white`}>
 

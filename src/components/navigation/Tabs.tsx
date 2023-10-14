@@ -7,8 +7,6 @@ import ListSvg from '../svg/icons/ListSvg';
 import HeartSvg from '../svg/icons/HeartSvg';
 import UserSvg from '../svg/icons/UserSvg';
 import PlusSvg from '../svg/icons/PlusSvg';
-import HomeScreen from '../../screens/HomeScreen';
-import { useSelectedList } from '../../context/NavigationProvider';
 import { storage } from '../../libs/storage';
 
 const {UIManager} = NativeModules;
@@ -40,8 +38,6 @@ const Tabs = ({screen, setScreen}: Props) => {
   const userOpacity = useRef(new Animated.Value(0.40)).current;
   const userScale = useRef(new Animated.Value(1)).current;
 
-  const { selectedList, setSelectedList } = useSelectedList()
-
 
 
   function pushToHome() {
@@ -61,7 +57,6 @@ const Tabs = ({screen, setScreen}: Props) => {
   const pushToAdd = () => {
 
     ativatedButtonAnimate('addScreen')
-    setSelectedList({...selectedList, screenOpen: true})
     storage.clearAll()
 
   }
@@ -179,15 +174,13 @@ const Tabs = ({screen, setScreen}: Props) => {
 
   useEffect(()=>{
 
-    console.log('screen:', screen)
-
     ativatedButtonAnimate(screen)
 
   },[])
 
   return (
 
-    <View style={tw`bottom-0 p-4 flex flex-row items-center justify-between gap-2 w-full h-[8%] bg-white rounded-t-[35px] absolute`}>
+    <View style={tw`bottom-0 p-4 flex flex-row items-center justify-between gap-2 w-full bg-white rounded-t-[35px] absolute`}>
       
 
 
@@ -195,7 +188,7 @@ const Tabs = ({screen, setScreen}: Props) => {
 
         {/* home button */}
         <TouchableWithoutFeedback onPress={pushToHome}>
-          <Animated.View style={{opacity: homeOpacity, transform:[{scale: homeScale}] }}>
+          <Animated.View style={[tw``,{opacity: homeOpacity, transform:[{scale: homeScale}] }]}>
             <HouseSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
         </TouchableWithoutFeedback>
@@ -212,7 +205,7 @@ const Tabs = ({screen, setScreen}: Props) => {
       </View>
 
       {/* add button */}
-      <TouchableWithoutFeedback onPress={pushToAdd}>
+      {/* <TouchableWithoutFeedback onPress={pushToAdd}>
 
         <Animated.View style={{
           position: 'relative',
@@ -230,7 +223,7 @@ const Tabs = ({screen, setScreen}: Props) => {
         </Animated.View>
 
 
-      </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback> */}
       {/* add button */}
 
       

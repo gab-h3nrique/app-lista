@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import ScreenLayout from '../../components/ScreenLayout'
+import ScreenLayout from '../../components/AnimatedScreen'
 import Tabs from '../../components/navigation/Tabs'
 import tw from 'twrnc';
 

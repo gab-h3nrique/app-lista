@@ -1,74 +1,88 @@
 import { ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import ScreenLayout from '../../components/ScreenLayout'
+import ScreenLayout from '../../components/AnimatedScreen'
 import Tabs from '../../components/navigation/Tabs'
 import tw from 'twrnc';
 import ShoppingSvg from '../../components/svg/icons/ShoppingSvg';
-import SelectedListScreen from '../list/SelectedListScreen';
 import PlusSvg from '../../components/svg/icons/PlusSvg';
 import PlusButton from './components/PlusButton';
-import { storage } from '../../libs/storage';
+import { List, Storage } from '../../libs/storage';
+import { useNavigation } from '../../context/NavigationProvider';
+import EditItemScreen from '../list/editItem/EditItemScreen';
+import EditListScreen from '../list/EditListScreen';
 
 interface Props {
   open: boolean
 }
 
 const ListScreen = ({ open }: Props) => {
-
-  // const [ listArray, setListArray ] = useState<any[]>([{name: "lista para academia", price: 15.85, itens: 7}])
-  const [selectedListScreenOpen, setSelectedListScreenOpen] = useState(false)
-
   
-  const [ list, setList ] = useState<any[]>([])
-  const [ selectedList, setSelectedList ] = useState<any>()
+  const { navigate, screens} = useNavigation()
 
-  function getAllList() {
+  const [ listState, setListState ] = useState<List[]>(Storage.List.getMany())
+  const [ selectedList, setSelectedList ] = useState<List>()
 
-    try{
+  function loadLists() {
 
-      setList(JSON.parse(storage.getString('userList') || "[]"))
-
-    } catch(error) { console.log('erro in get list on storage', error) }
+    setListState(()=> Storage.List.getMany())
 
   }
 
   async function createNewList() {
 
-    const newList = { id: null, name:"Minha nova lista 3", itens:[] }
+    const newList = Storage.List.create({name: 'Nova lista', itens: [], checked: false})
 
-    storage.set('userList', JSON.stringify([newList, ...list]))
+    if(!newList) return console.warn('list was not created')
 
-    setList([newList, ...list])
+    setListState((li)=>[newList, ...li])
 
     setSelectedList(newList)
 
-    setSelectedListScreenOpen(true)
+    navigate.open('EditListScreen')
+
+  }
+
+  async function saveList(list: List) {
+
+    Storage.List.update(list)
+
+    setListState(()=> Storage.List.getMany())
+
+  }
+
+  async function openEditList(list: List) {
+
+    setSelectedList(()=> list)
+
+    navigate.open('EditListScreen')
 
   }
 
   useEffect(()=>{
 
-    if(open) getAllList()
+    loadLists()
 
   },[open])
 
   return (
-    <>
+
+    <View style={tw`relative w-full h-full`}>
+
       <ScrollView>
 
         <View style={tw`gap-3 p-4 ${open ? 'flex' : 'hidden'} justify-start items-center w-full h-full`}>
 
           <View>
-          <Text  style={tw`text-slate-500 text-[1.2rem] text-center font-bold `}>Lista de compras</Text>
+            <Text  style={tw`text-slate-500 text-[1.2rem] text-center font-bold `}>Lista de compras</Text>
           </View>
 
           {
-            list.length > 0 ? list.map((element: any, index) =>{
+            listState.length > 0 ? listState.map((e: List, index) =>{
 
               return (
 
                 <React.Fragment key={index}>
-                  <TouchableWithoutFeedback onPress={() => {setSelectedListScreenOpen(true), setSelectedList(element)}}>
+                  <TouchableWithoutFeedback onPress={() => openEditList(e)}>
 
                     <View style={tw`p-3 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white`}>
 
@@ -76,11 +90,11 @@ const ListScreen = ({ open }: Props) => {
               
                       <View style={tw`gap-2 flex`}>
               
-                        <Text style={tw`text-slate-400 text-[.8rem] font-bold`}>{element.name}</Text>
+                        <Text style={tw`text-slate-400 text-[.8rem] font-bold`}>{e.name}</Text>
               
                         <View style={tw`gap-2 flex flex-row`}>
               
-                          <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>{element?.itens.lenght || 0} itens</Text>
+                          <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>{e.itens.length || 0} itens</Text>
                           <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>R${0.0}</Text>
               
                         </View>
@@ -108,7 +122,7 @@ const ListScreen = ({ open }: Props) => {
                   <View style={tw`p-3 gap-4 rounded-[1.2rem] w-full flex flex-row justify-center items-center bg-white`} >
 
                     <PlusSvg height={35} width={35} fill={'#94A3B8'} style={{ transform: [{ rotateY: '180deg' }] }}/>
-                    <Text  style={tw`text-slate-400 text-[1.15rem] text-center font-bold `}>Adicione um item</Text>
+                    <Text  style={tw`text-slate-400 text-[1.15rem] text-center font-bold `}>Crie uma lista</Text>
                   
                   </View>
                 </TouchableWithoutFeedback>
@@ -126,12 +140,13 @@ const ListScreen = ({ open }: Props) => {
         </View>
       </TouchableWithoutFeedback>
 
-      <SelectedListScreen open={selectedListScreenOpen} onClose={()=> setSelectedListScreenOpen(false)} selectedList={selectedList} setSelectedList={setSelectedList}/>
+      {/* <SelectedListScreen selectedList={selectedList} saveList={saveList}/> */}
+      {/* <EditItemScreen  selectedList={selectedList} saveList={saveList}/> */}
+      <EditListScreen selectedList={selectedList} saveList={saveList}/>
 
-    </>
+    </View>
+
   )
 }
 
 export default ListScreen
-
-const styles = StyleSheet.create({})

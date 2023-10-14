@@ -64,7 +64,6 @@ const EditItemScreen = ({ open, onClose, item, onSave, onRemove }: Props) => {
 
   function saveEditedItem() {
 
-    console.log('saving Item')
 
     onSave(editedItem)
 
@@ -72,8 +71,6 @@ const EditItemScreen = ({ open, onClose, item, onSave, onRemove }: Props) => {
 
   useEffect(()=>{
 
-    if(open) console.log('opening editItemScreen')
-    if(!open) console.log('closing editItemScreen')
     if(open) setEditedItem(item)
 
     changeScreen()
