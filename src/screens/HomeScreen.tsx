@@ -13,16 +13,17 @@ interface Props {
   open: boolean
 }
 
-const HomeScreen = ({open}: Props) => {
+const HomeScreen = () => {
 
+  console.log('################################################')
 
-   return open ? (
+   return (
 
     <View>
       <NewsScreen/>
     </View>
 
-  ) : <></>
+  )
   
 }
 

@@ -1,13 +1,13 @@
 import { Animated, NativeModules, StyleSheet, Text, Touchable, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import tw from 'twrnc';
-import SvgComponent from '../svg/SvgComponent';
 import HouseSvg from '../svg/icons/HouseSvg';
 import ListSvg from '../svg/icons/ListSvg';
 import HeartSvg from '../svg/icons/HeartSvg';
 import UserSvg from '../svg/icons/UserSvg';
-import PlusSvg from '../svg/icons/PlusSvg';
-import { storage } from '../../libs/storage';
+import ButtonComponent from '../buttons/Button';
+import Press from '../buttons/Button';
+import Button from '../buttons/Button';
 
 const {UIManager} = NativeModules;
 
@@ -57,7 +57,6 @@ const Tabs = ({screen, setScreen}: Props) => {
   const pushToAdd = () => {
 
     ativatedButtonAnimate('addScreen')
-    storage.clearAll()
 
   }
 
@@ -187,25 +186,25 @@ const Tabs = ({screen, setScreen}: Props) => {
       <View style={tw`gap-5 flex flex-row`}>
 
         {/* home button */}
-        <TouchableWithoutFeedback onPress={pushToHome}>
+        <Button onPress={pushToHome}>
           <Animated.View style={[tw``,{opacity: homeOpacity, transform:[{scale: homeScale}] }]}>
             <HouseSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </Button>
         {/* home button */}
 
         {/* list button */}
-        <TouchableWithoutFeedback onPress={pushToList}>
+        <Button onPress={pushToList}>
           <Animated.View style={{opacity: listOpacity, transform:[{scale: listScale}] }}>
             <ListSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </Button>
         {/* list button */}
 
       </View>
 
       {/* add button */}
-      {/* <TouchableWithoutFeedback onPress={pushToAdd}>
+      {/* <Button onPress={pushToAdd}>
 
         <Animated.View style={{
           position: 'relative',
@@ -223,26 +222,26 @@ const Tabs = ({screen, setScreen}: Props) => {
         </Animated.View>
 
 
-      </TouchableWithoutFeedback> */}
+      </Button> */}
       {/* add button */}
 
       
       <View style={tw`gap-5 flex flex-row`}>
           
         {/* favorite button */}
-        <TouchableWithoutFeedback onPress={pushToFavorite}>
+        <Button onPress={pushToFavorite}>
           <Animated.View style={{opacity: favoriteOpacity, transform:[{scale: favoriteScale}] }}>
             <HeartSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </Button>
         {/* favorite button */}
 
         {/* user button */}
-        <TouchableWithoutFeedback onPress={pushToUser}>
+        <Button onPress={pushToUser}>
           <Animated.View style={{opacity: userOpacity, transform:[{scale: userScale}] }}>
             <UserSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </Button>
          {/* user button */}
 
       </View>

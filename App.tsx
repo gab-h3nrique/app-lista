@@ -14,8 +14,15 @@ function App(): JSX.Element {
 
     <Layout>
 
-      <HomeScreen open={screen == 'homeScreen' ? true : false }/>
-      <ListScreen open={screen == 'listScreen' ? true : false }/>
+      {/* <HomeScreen open={screen == 'homeScreen' ? true : false }/>
+      <ListScreen open={screen == 'listScreen' ? true : false }/> */}
+      {
+        screen == 'homeScreen' ? <HomeScreen/> :
+        screen == 'listScreen' ? <ListScreen/>
+        : null
+
+
+      }
 
       <Tabs screen={screen} setScreen={setScreen}/>
 

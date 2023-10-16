@@ -34,6 +34,8 @@ const QuantityScreen = ({ item, selectQuantity }: Props) => {
 
     if(navigate.isOpen('QuantityScreen')) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
     if(!navigate.isOpen('QuantityScreen')) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
+
+    if(navigate.isOpen('QuantityScreen')) setQuantity(()=> 0)
   
   }
   // ------------animation--------------//
@@ -60,7 +62,13 @@ const QuantityScreen = ({ item, selectQuantity }: Props) => {
 
     changeScreen()
 
-  },[screens])
+  },[navigate.isOpen('QuantityScreen'), item])
+
+  useEffect(()=>{
+    
+    console.debug('5--------------QuantityScreen')
+
+  },[])
 
 
   return (
@@ -78,7 +86,7 @@ const QuantityScreen = ({ item, selectQuantity }: Props) => {
           </View>
 
           <Text  style={tw`text-slate-500 text-[2rem] text-center font-bold `}>Quantidade</Text>
-          
+
         </View>
 
         <View style={tw`p-3 gap-5 w-full`}>

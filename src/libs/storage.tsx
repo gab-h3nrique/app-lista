@@ -9,11 +9,12 @@ export const storageProvider = new MMKV();
 
 //###################### LIST ######################//
 const LISTS = 'USER_LISTS';
+const ITENS = 'USER_ITENS';
 
 export interface List {
     id: number; 
     name: string; 
-    itens: Item[];
+    itens?: Item[];
     checked: boolean; 
     updatedAt?: any;
     createdAt?: any;
@@ -28,6 +29,7 @@ export interface Item {
     image?: string;
     updatedAt?: any;
     createdAt?: any;
+    listId?: number | null;
     productId?: number | null;
 }
 
@@ -40,6 +42,8 @@ function listFunctions() {
     const getListById = (id: number): List | null => JSON.parse(storageProvider.getString(LISTS) || "[]").find((e: List)=> e.id === id) || null
     
     const setLists = (arrayList: List[]) =>  storageProvider.set(LISTS, JSON.stringify(arrayList))
+
+    const getAllItens = (): Item[] => JSON.parse(storageProvider.getString(ITENS) || "[]")
     
     return {
 
@@ -47,7 +51,11 @@ function listFunctions() {
 
             try {
 
-                return getListById(id) || null
+                let list = getListById(id)
+
+                if(!list) return null
+
+                return {...list, itens:getAllItens().filter(e=> e.listId === id) }
 
             } catch(error) { console.log('erro in get list on storage', error); return null}
 
@@ -58,16 +66,18 @@ function listFunctions() {
             try {
 
                 const data = getAllLists()
-    
-                if(name) return data.filter(li => li.name.includes(name))
+
+                const newLists = data.map((e)=> { return {...e,  itens:getAllItens().filter(j=> j.listId === e.id)} })
+
+                if(name) return newLists.filter(li => li.name.includes(name))
                 
-                return data
+                return newLists
 
             } catch(error) { console.log('erro in getMany list on storage', error); return []}
 
         },
 
-        create(list: {name: string, itens?: Item[], checked: boolean}):List | null {
+        create(list: {name: string, checked: boolean}):List | null {
 
             try {
 
@@ -83,7 +93,6 @@ function listFunctions() {
                     ...list,
                     id: id,
                     name: notRepeatedName,
-                    itens: [],
                     checked: list.checked,
                     updatedAt: new Date().getTime(),
                     createdAt: new Date().getTime(),
@@ -97,7 +106,7 @@ function listFunctions() {
 
         },
 
-        update(list: List):List | null {
+        update(id: number, list: List):List | null {
 
             try {
 
@@ -107,7 +116,7 @@ function listFunctions() {
                 const newDate = new Date().getTime()
     
                 data.forEach(e => {
-                    if(e.id === list.id) newList.push({...list, id: e.id, updatedAt: newDate})
+                    if(e.id === id) newList.push({...list, id: e.id, updatedAt: newDate, itens: []})
                     else newList.push(e)
                 });
     
@@ -133,98 +142,112 @@ function listFunctions() {
 
         },
 
-        getByName(name: string): List[] {
+    }
+}
+
+function itemFunctions() {
+
+    const getAllItens = (): Item[] => JSON.parse(storageProvider.getString(ITENS) || "[]")
+
+    const getItemById = (id: number): Item | null => JSON.parse(storageProvider.getString(ITENS) || "[]").find((e: Item)=> e.id === id) || null
+    
+    const setItens = (array: Item[]) =>  storageProvider.set(ITENS, JSON.stringify(array))
+    
+    return {
+
+        get(id: number):Item | null {
+
+            try {
+
+                return getItemById(id) || null
+
+            } catch(error) { console.log('erro in get item on storage', error); return null}
+
+        },
+
+        getMany(name?: string): Item[] {
+            
+            try {
+
+                const data = getAllItens()
+    
+                if(name) return data.filter(e => e.name.includes(name))
+                
+                return data
+
+            } catch(error) { console.log('erro in getMany list on storage', error); return []}
+
+        },
+
+        create(item: Item):Item | null {
+
+            try {
+
+                const data = getAllItens()
+    
+                const id = new Date().getTime()
+
+                const newItem: Item = { ...item, id: id,  updatedAt: new Date().getTime(), createdAt: new Date().getTime() }
+    
+                setItens([newItem, ...data])
+    
+                return getItemById(id)
+
+            } catch(error) { console.log('erro in create item on storage', error); return null}
+
+        },
+
+        update(id:number, item: Item):Item | null {
+
+            try {
+
+                const data = getAllItens()
+    
+                const newDate = new Date().getTime()
+    
+                setItens(data.map((e)=> e.id === id ? {...item, id: e.id, updatedAt: newDate} : e ))
+    
+                return getItemById(id)
+
+            } catch(error) { console.log('erro in update item on storage', error); return null}
+
+        },
+
+        delete(id: number): boolean {
+
+            try {
+
+                const data = getAllItens()
+    
+                setItens(data.filter((e: any)=> e.id !== id))
+    
+                return !getItemById(id) ? true : false;
+
+            } catch(error) { console.log('erro in delete item on storage', error); return false}
+
+        },
+
+        getByName(name: string): Item[] {
 
             try{
 
-                const data =  getAllLists()
+                const data =  getAllItens()
     
-                return data.filter(li=> li.name.includes(name))
+                return data.filter(e=> e.name.includes(name))
 
-            } catch(error) { console.log('erro in getByName list on storage', error); return []}
+            } catch(error) { console.log('erro in getByName item on storage', error); return []}
 
         },
 
-        getItens(listId: number): Item[] | null {
+        getByListId(id: number): Item[] {
 
-            try {
+            try{
 
-                const list = getListById(listId)
-
-                if(!list) return null
-
-                return list.itens || []
-
-            } catch(error) { console.log('erro in get list on storage', error); return null}
-
-        },
-
-        createItem(listId: number, item: Item):Item | null {
-
-            try {
-
-                const data = getAllLists()
-
-                const list = getListById(listId)
-
-                if(!list) return null
-                
-                const id = new Date().getTime()
-
-                const newItem:Item = {
-                    id: id,
-                    name: item.name,
-                    quantity: item.quantity || 0,
-                    price: item.price,
-                    checked: false,
-                    updatedAt: new Date().getTime(),
-                    createdAt: new Date().getTime(),
-                    productId: item.productId ? item.productId : -1,
-                }
-
-                list.itens.unshift(newItem)
-
-                const newList: List[] = [];
-
-                data.forEach(li => {
-                    if(li.id === list.id) newList.push(list)
-                    else newList.push(li)
-                });
+                const data =  getAllItens()
     
-                setLists(newList)
+                return data.filter(e=> e.listId === id)
 
-                return newItem
-
-            } catch(error) { console.log('erro in create new item', error); return null}
-
-        },
-
-        deleteItem(listId: number, itemId: number):boolean {
-
-            try {
-
-                const data = getAllLists()
-
-                const list = getListById(listId)
-
-                if(!list) return false
-                
-                const newItens = list.itens.filter((e)=> e.id !== itemId)
-
-                list.itens = newItens
-
-                const newList: List[] = [];
-
-                data.forEach(li => {
-                    if(li.id === list.id) newList.push(list)
-                    else newList.push(li)
-                });
-    
-                setLists(newList)
-
-                return true
-
-            } catch(error) { console.log('erro in delete an item', error); return false}
+            } catch(error) { console.log('erro in getByName item on storage', error); return []}
 
         },
 
@@ -633,15 +656,10 @@ function ProductFunctions() {
 //#################### CATEGORIES | PRODUCTS ####################//
 
 
-
-
-
-
-
-
 export const Storage = {
 
     List: listFunctions(),
+    Item: itemFunctions(),
     Category: categoriesFunctions(),
     Brand: BrandFunctions(),
     Product: ProductFunctions(),
@@ -650,11 +668,7 @@ export const Storage = {
 
 
 
-
-
-
-
-console.warn('-------------------------renderizando app')
+console.debug('-------------------------renderizando app')
 
 storageProvider.clearAll()
 

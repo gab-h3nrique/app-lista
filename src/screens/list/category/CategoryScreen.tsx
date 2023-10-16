@@ -40,7 +40,13 @@ const CategoryScreen = ({ selectCategory }: Props) => {
 
     changeScreen()
 
-  },[screens])
+  },[navigate.isOpen('CategoryScreen')])
+
+  useEffect(()=>{
+    
+    console.debug('3--------------CategoryScreen')
+
+  },[])
 
 
   return (

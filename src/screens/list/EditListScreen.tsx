@@ -13,17 +13,18 @@ import CheckSolidSvg from '../../components/svg/icons/CheckSolidSvg';
 import CheckOutSvg from '../../components/svg/icons/CheckOutSvg';
 import EditItemScreen from './editItem/EditItemScreen';
 import { useNavigation } from '../../context/NavigationProvider';
+import Button from '../../components/buttons/Button';
 
 const { UIManager } = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 interface Props {
-  selectedList: any
-  saveList: any
+  selectedList: List | null
+  loadLists: any
 }
 
-const EditListScreen = ({ selectedList, saveList}: Props) => {
+const EditListScreen = ({ selectedList, loadLists}: Props) => {
 
   const { navigate, screens } = useNavigation()
 
@@ -37,17 +38,37 @@ const EditListScreen = ({ selectedList, saveList}: Props) => {
   }
   // ------------animation--------------//
 
-  const [ list, setList ] = useState<List>(selectedList);
+  const [ selectedListItens, setSelectedListItens ] = useState<Item[]>();
 
 
   const [ selectedCategory, setSelectedCategory ] = useState<Category>();
   const [ selectedItem, setSelectedItem ] = useState<Item>(EmptyItem)
 
+  function getListItens() {
+
+    if(!selectedList) return;
+
+    setSelectedListItens(()=> Storage.Item.getByListId(selectedList.id))
+
+  }
+
+  function editSelectedList(list: List) {
+
+    if(!selectedList) return console.warn('this list is null')
+
+    const updatedList = Storage.List.update(list.id, list)
+
+    if(!updatedList) return console.warn('error updating list')
+
+    loadLists()
+
+  }
+
   function openEditItemScreen(item: Item) {
 
-    navigate.open('EditItemScreen')
-
     setSelectedItem(()=> item)
+
+    navigate.open('EditItemScreen')
 
   }
 
@@ -87,57 +108,64 @@ const EditListScreen = ({ selectedList, saveList}: Props) => {
 
     addItem(editedItem)
 
+  }
+
+  function addItem(item: Item) {
+
+    if(!selectedList) return console.warn('this list is null')
+
+    const newItem = Storage.Item.create({...item, listId: selectedList.id})
+
+    if(!newItem) return console.warn('error creating item')
+
+    getListItens()
+
+    loadLists()
+
     navigate.close('CategoryScreen')
     navigate.close('ItensScreen')
     navigate.close('QuantityScreen')
 
   }
 
-  function addItem(item: Item) {
+  function editItem(item: Item) {
 
-    const newItem = Storage.List.createItem(selectedList.id, item)
+    const editedItem = Storage.Item.update(item.id, item)
 
-    if(!newItem) return console.warn('error creating item')
+    if(!editedItem) return console.warn('error editing item')
 
-    if(list && list.itens) setList((e)=>{ return {...e, itens:[newItem, ...e.itens] } })
-    else setList((e)=>{ return {...e, itens:[newItem] } })
+    getListItens()
 
-    saveList(()=>{ return {...selectedList, itens: [newItem, ...selectedList.itens]} })
-    
-  }
-
-  function editItem(newItem: any, index?: number) {
-
-    console.log('adding newItem', newItem, index)
+    navigate.close('EditItemScreen')
 
   }
 
-  function savingEditedItem(newItem: any) {
+  function removeItem(id: number) {
 
-    // editItem(newItem, indexSelectedItem)
-    // setEditScreenOpen(false)
-    // setSelectedItem({})
+    const isDeleted = Storage.Item.delete(id)
 
-  }
+    if(!isDeleted) return console.warn('error removing item')
 
-  function removingEditedItem() {
+    getListItens()
 
-    // console.log('removing item: ', newItem)
+    loadLists()
 
-    // const newList = itens.filter((object, i)=> i !== indexSelectedItem)
-
-    // setItens(newList)
-    // setIndexSelectedItem(-1)
-    // setEditScreenOpen(false)
-    // setSelectedItem({})
+    navigate.close('EditItemScreen')
 
   }
 
   useEffect(()=>{
     
     changeScreen()
+    if(navigate.isOpen('EditListScreen')) getListItens()
 
-  },[screens, list])
+  },[navigate.isOpen('EditListScreen')])
+
+  useEffect(()=>{
+    
+    console.debug('2--------------EditListScreen')
+
+  },[])
 
   return (
 
@@ -146,68 +174,53 @@ const EditListScreen = ({ selectedList, saveList}: Props) => {
 
         <View style={tw`p-3 justify-center items-center flex flex-row w-full relative`}>
 
-          <View style={tw`left-2 top-5 w-9 h-8 rounded-[.6rem] bg-slate-400 flex items-center justify-center absolute`} >
-            <TouchableWithoutFeedback onPress={()=> navigate.close('EditListScreen')}>
-              <ChevronSvg height={20} width={20} fill={'white'} style={{ transform: [{ rotateY: '180deg' }] }}/>
-            </TouchableWithoutFeedback>
-          </View>
+          <Pressable  onPress={()=> navigate.close('EditListScreen')} style={tw`left-2 top-5 w-9 h-8 rounded-[.6rem] bg-slate-400 flex items-center justify-center absolute`} >
+            <ChevronSvg height={20} width={20} fill={'white'} style={{ transform: [{ rotateY: '180deg' }] }}/>
+          </Pressable>
 
-          <TextInput
-          style={tw`text-slate-500 text-center font-bold text-[1.2rem]`}
-          onChangeText={(event)=> {}}
-          value={selectedList?.name}
-          placeholder="Minha nova lista"
-          />
+          <TextInput onChangeText={(event)=> selectedList && editSelectedList({...selectedList, name: event})} value={selectedList?.name} style={tw`text-slate-500 text-center font-bold text-[1.2rem]`}/>
 
         </View>
 
         <View style={tw`px-4 gap-3 flex justify-start items-center`}>
           {
-            list && list.itens.length > 0 ? list.itens.map(( item: any, index: number) =>{
+            selectedListItens && selectedListItens.length > 0 ? selectedListItens.map(( item, i: number) =>{
 
               return (
 
-                <React.Fragment key={index}>
-                  <TouchableWithoutFeedback  onLongPress={()=> console.log('ordenação')} onPress={() => openEditItemScreen(item)}>
+                <Button key={i} onLongPress={()=> console.log('ordenação')} onPress={() => openEditItemScreen(item)} style={tw`p-2 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white relative`}>
 
-                    <View style={tw`p-3 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white relative`}>
+                  <View style={tw`p-2 flex bg-violet-100 rounded-[.7rem]`}>
+                    {
+                      item.image ? <Image style={tw`w-6 h-6`} source={{ uri: item.image }} />
+                      : <CookieSvg height={25} width={25} fill={'#a78bfa'}/>
+                    }
+                  </View>
 
+                  <View style={tw`gap-1 flex`}>
+      
+                    <Text style={tw`text-slate-400 text-[.8rem] font-bold`}>{item.name}</Text>
 
+                    <View style={tw`gap-2 flex flex-row`}>
 
-                      <View style={tw`p-2 flex bg-violet-100 rounded-[.7rem]`}>
-                        {
-                          item.image ? <Image style={tw`w-8 h-8`} source={{ uri: item.image }} />
-                          : <CookieSvg height={32} width={32} fill={'#a78bfa'}/>
-                        }
-                      </View>
+                      <Text style={tw`px-2 py-1 bg-slate-200 text-slate-500 text-[.51rem] font-bold text-center rounded-full`}>R${item.price || ' -'}</Text>
 
-                      <View style={tw`gap-2 flex`}>
-          
-                        <Text style={tw`text-slate-400 text-[.8rem] font-bold`}>{item.name}</Text>
-
-                        <View style={tw`gap-2 flex flex-row`}>
-
-                          <Text style={tw`px-2 py-1 bg-slate-200 text-slate-600 text-[.6rem] font-bold text-center rounded-full`}>R${item.price || ' -'}</Text>
-
-                        </View>
-
-                      </View>
-
-                      <TouchableWithoutFeedback onPress={() => editItem({...item, checked: !item.checked}, index)}>
-                        {
-                          item.checked ? <CheckSolidSvg height={30} width={30} fill={'#a78bfa'} marginLeft={"auto"}/>
-                          : <CheckOutSvg height={30} width={30} fill={'#CBD5E1'} marginLeft={"auto"} />
-                        }
-                      </TouchableWithoutFeedback>
-
-                      <View style={tw`-top-2 -left-2 w-8 h-8 rounded-full flex justify-center items-center absolute z-40 ${item.checked ? 'bg-violet-400' : 'bg-slate-300'}`}>
-                        <Text style={tw`text-white text-[1rem] font-bold`}>{ (item.quantity && item.quantity > 99 ? '+99' : item.quantity) || 0}</Text>
-                      </View>
-              
                     </View>
-                    
-                  </TouchableWithoutFeedback>
-                </React.Fragment>
+
+                  </View>
+
+                  <Button onPress={() => editItem({...item, checked: !item.checked})} style={tw`ml-auto`}>
+                    {
+                      item.checked ? <CheckSolidSvg height={25} width={25} fill={'#a78bfa'}/>
+                      : <CheckOutSvg height={25} width={25} fill={'#CBD5E1'} />
+                    }
+                  </Button>
+
+                  <View style={tw`-top-2 -left-2 w-8 h-8 rounded-full flex justify-center items-center absolute z-40 ${item.checked ? 'bg-violet-400' : 'bg-slate-300'}`}>
+                    <Text style={tw`text-white text-[1rem] font-bold`}>{ (item.quantity && item.quantity > 99 ? '+99' : item.quantity) || 0}</Text>
+                  </View>
+                  
+                </Button>
                 
               )
 
@@ -229,14 +242,14 @@ const EditListScreen = ({ selectedList, saveList}: Props) => {
           }
         </View>
 
-        <Pressable onPress={() => navigate.open('CategoryScreen')} style={tw`bottom-6 right-3 w-16 h-16 rounded-full flex justify-center items-center bg-violet-400 absolute`} >
+        <Button onPress={() => navigate.open('CategoryScreen')} style={tw`bottom-6 right-3 w-16 h-16 rounded-full flex justify-center items-center bg-violet-400 absolute`} >
           <PlusSvg height={38} width={38} fill={'white'} style={{ transform: [{ rotateY: '180deg' }] }}/>
-        </Pressable>
+        </Button>
 
         <CategoryScreen selectCategory={selectCategory}/>
         <ItensScreen category={selectedCategory || null} selectItem={selectItem}/>
         <QuantityScreen item={selectedItem || null} selectQuantity={selectQuantity}/>
-        {/* <EditItemScreen open={editScreenOpen} onClose={()=> {setEditScreenOpen(false), selectItem(null)}} item={selectedItem || {}} onSave={savingEditedItem} onRemove={removingEditedItem}/> */}
+        <EditItemScreen selectedItem={selectedItem} editItem={editItem} removeItem={removeItem}/>
       
       </View>
     </Animated.View>

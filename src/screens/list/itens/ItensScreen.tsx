@@ -47,7 +47,13 @@ const ItensScreen = ({ category, selectItem }: Props) => {
     changeScreen()
     getItens()
 
-  },[screens, category])
+  },[navigate.isOpen('ItensScreen'), category])
+
+  useEffect(()=>{
+    
+    console.debug('4--------------ItensScreen')
+
+  },[])
 
   return (
 
