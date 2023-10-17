@@ -33,11 +33,11 @@ function App(): JSX.Element {
     <NavigationProvider>
       <ThemeProvider>
 
-      <Layout>
+        <Layout>
 
-        <Index/>
+          <Index/>
 
-      </Layout>
+        </Layout>
 
       </ThemeProvider>
     </NavigationProvider>
