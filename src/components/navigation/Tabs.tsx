@@ -1,13 +1,13 @@
 import { Animated, NativeModules, StyleSheet, Text, Touchable, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import tw from 'twrnc';
 import HouseSvg from '../svg/icons/HouseSvg';
 import ListSvg from '../svg/icons/ListSvg';
 import HeartSvg from '../svg/icons/HeartSvg';
 import UserSvg from '../svg/icons/UserSvg';
-import ButtonComponent from '../buttons/Button';
-import Press from '../buttons/Button';
 import Button from '../buttons/Button';
+import { useNavigation } from '../../context/NavigationProvider';
+import { useTheme } from '../../context/ThemeProvider';
+import tw from '../../libs/tailwind';
 
 const {UIManager} = NativeModules;
 
@@ -18,7 +18,9 @@ interface Props {
   setScreen: any;
 }
 
-const Tabs = ({screen, setScreen}: Props) => {
+const Tabs = () => {
+
+  const { theme } = useTheme()
 
   // const [ screen, setScreen ] = useState(props.screen || '')  // Initial screen
 
@@ -38,39 +40,15 @@ const Tabs = ({screen, setScreen}: Props) => {
   const userOpacity = useRef(new Animated.Value(0.40)).current;
   const userScale = useRef(new Animated.Value(1)).current;
 
+  const { navigate, screens} = useNavigation()
 
+  function switchTo(screen: string) {
 
-  function pushToHome() {
+    if(!screen) return console.warn('no screen was selected in tabs');
 
-    ativatedButtonAnimate('homeScreen')
-    setScreen('homeScreen')
+    navigate.push(screen)
 
-  }
-
-  function pushToList() {
-
-    ativatedButtonAnimate('listScreen')
-    setScreen('listScreen')
-
-  }
-
-  const pushToAdd = () => {
-
-    ativatedButtonAnimate('addScreen')
-
-  }
-
-  function pushToFavorite() {
-
-    ativatedButtonAnimate('favoriteScreen')
-    setScreen('')
-
-  }
-
-  function pushToUser() {
-
-    ativatedButtonAnimate('userScreen')
-    setScreen('')
+    ativatedButtonAnimate(screen)
 
   }
 
@@ -78,16 +56,15 @@ const Tabs = ({screen, setScreen}: Props) => {
 
     if(!screen) return;
 
-    if(screen == 'homeScreen') {
+    if(screen == 'HomeScreen') {
 
       Animated.timing(homeOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
       Animated.spring(homeScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
   
       Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
       Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-  
-      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+
+
   
       Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
       Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
@@ -96,7 +73,7 @@ const Tabs = ({screen, setScreen}: Props) => {
 
     }
 
-    if(screen == 'listScreen') {
+    if(screen == 'ListScreen') {
 
       Animated.timing(homeOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
       Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
@@ -104,8 +81,7 @@ const Tabs = ({screen, setScreen}: Props) => {
       Animated.timing(listOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
       Animated.spring(listScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
   
-      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
+
   
       Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
       Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
@@ -114,22 +90,8 @@ const Tabs = ({screen, setScreen}: Props) => {
 
     }
 
-    if(screen == 'addScreen') {
 
-      Animated.spring(addScale, { toValue: 1.1, friction: 3, useNativeDriver: false }).start();
-
-      Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-  
-      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-  
-      Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    }
-
-    if(screen == 'favoriteScreen') {
+    if(screen == 'UserScreen') {
 
       Animated.timing(homeOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
       Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
@@ -137,31 +99,10 @@ const Tabs = ({screen, setScreen}: Props) => {
       Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
       Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
   
-      Animated.timing(favoriteOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(favoriteScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
-  
-      Animated.timing(userOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(userScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-  
-      Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-
-    }
-
-    if(screen == 'userScreen') {
-
-      Animated.timing(homeOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(homeScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-  
-      Animated.timing(listOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(listScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
-  
-      Animated.timing(favoriteOpacity, { toValue: 0.40, duration: 160, useNativeDriver: false}).start();
-      Animated.spring(favoriteScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
   
       Animated.timing(userOpacity, { toValue: 1, duration: 160, useNativeDriver: false}).start();
       Animated.spring(userScale, { toValue: 1.2, friction: 3, useNativeDriver: false }).start();
   
-      Animated.spring(addScale, { toValue: 1, friction: 3, useNativeDriver: false }).start();
 
     }
 
@@ -169,24 +110,26 @@ const Tabs = ({screen, setScreen}: Props) => {
 
   }
 
-
-
   useEffect(()=>{
 
-    ativatedButtonAnimate(screen)
+    switchTo('HomeScreen')
 
   },[])
 
+  useEffect(()=>{
+
+  },[theme])
+
   return (
 
-    <View style={tw`bottom-0 p-4 flex flex-row items-center justify-between gap-2 w-full bg-white rounded-t-[35px] absolute`}>
+    <View style={tw`bottom-0 p-4 flex flex-row items-center justify-between gap-2 w-full bg-white dark:bg-black rounded-t-[35px] absolute`}>
       
 
 
       <View style={tw`gap-5 flex flex-row`}>
 
         {/* home button */}
-        <Button onPress={pushToHome}>
+        <Button onPress={()=> switchTo('HomeScreen')}>
           <Animated.View style={[tw``,{opacity: homeOpacity, transform:[{scale: homeScale}] }]}>
             <HouseSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
@@ -194,7 +137,7 @@ const Tabs = ({screen, setScreen}: Props) => {
         {/* home button */}
 
         {/* list button */}
-        <Button onPress={pushToList}>
+        <Button onPress={()=> switchTo('ListScreen')}>
           <Animated.View style={{opacity: listOpacity, transform:[{scale: listScale}] }}>
             <ListSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
@@ -202,34 +145,11 @@ const Tabs = ({screen, setScreen}: Props) => {
         {/* list button */}
 
       </View>
-
-      {/* add button */}
-      {/* <Button onPress={pushToAdd}>
-
-        <Animated.View style={{
-          position: 'relative',
-          height: 85,
-          width: 85,
-          borderRadius: 999999,
-          bottom: 27,
-          transform: [{scale: addScale}], 
-          backgroundColor: '#a78bfa',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          }}>
-            <PlusSvg  height={49} fill={'white'}/>
-        </Animated.View>
-
-
-      </Button> */}
-      {/* add button */}
-
       
       <View style={tw`gap-5 flex flex-row`}>
           
         {/* favorite button */}
-        <Button onPress={pushToFavorite}>
+        <Button onPress={()=>{}}>
           <Animated.View style={{opacity: favoriteOpacity, transform:[{scale: favoriteScale}] }}>
             <HeartSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
@@ -237,7 +157,7 @@ const Tabs = ({screen, setScreen}: Props) => {
         {/* favorite button */}
 
         {/* user button */}
-        <Button onPress={pushToUser}>
+        <Button onPress={()=> switchTo('UserScreen')}>
           <Animated.View style={{opacity: userOpacity, transform:[{scale: userScale}] }}>
             <UserSvg height={30} fill={'#a78bfa'}/>
           </Animated.View>
@@ -245,8 +165,6 @@ const Tabs = ({screen, setScreen}: Props) => {
          {/* user button */}
 
       </View>
-
-      
 
     </View>
 

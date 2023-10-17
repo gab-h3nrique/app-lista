@@ -20,27 +20,23 @@ const AnimatedScreen = ({open, style, children}: Props) => {
 
   function changeScreen() {
 
-    if(open) Animated.timing(positionScreen, { toValue: 0, duration: 400, useNativeDriver: false, }).start();
-    if(!open) Animated.timing(positionScreen, { toValue: -500, delay: 1000, duration: 400, useNativeDriver: false}).start();
-  
+    console.log('------------------------------renderizando tela animada')
+
+    
   }
+  if(open) Animated.timing(positionScreen, { toValue: 0, duration: 400, useNativeDriver: false, }).start();
+  if(!open) Animated.timing(positionScreen, { toValue: -500, delay: 1000, duration: 400, useNativeDriver: false}).start();
   // ------------animation--------------//
 
   useEffect(()=>{
 
     changeScreen()
 
-  }, [open])
-
-  // useEffect(()=>{
-
-  //   changeScreen()
-
-  // }, [open])
+  }, [])
 
   return (
 
-    <Animated.View style={[style, { transform: [{translateX: positionScreen}], }]}>
+    <Animated.View style={[style, { transform: [{translateX: positionScreen}],}]}>
         
       {children}
 

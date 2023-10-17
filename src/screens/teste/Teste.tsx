@@ -1,7 +1,7 @@
 import { View, Text, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import tw from 'twrnc'
-import AnimatedScreen from '../../components/AnimatedScreen'
+import AnimatedScreen from '../../components/view/AnimatedScreen'
 import { useNavigation } from '../../context/NavigationProvider'
 
 export const ComponentA = () => {

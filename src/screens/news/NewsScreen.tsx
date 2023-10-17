@@ -1,10 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import ScreenLayout from '../../components/AnimatedScreen'
-import Tabs from '../../components/navigation/Tabs'
+import React, { useEffect } from 'react'
 import tw from 'twrnc';
 
 const NewsScreen = () => {
+
+  
+
+  useEffect(()=>{
+
+
+  },[])
+
   return (
 
     <View style={tw`flex justify-center items-center w-full h-full`}>

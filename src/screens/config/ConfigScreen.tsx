@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import ScreenLayout from '../../components/AnimatedScreen'
+import ScreenLayout from '../../components/view/AnimatedScreen'
 import Tabs from '../../components/navigation/Tabs'
 
 const ConfigScreen = () => {

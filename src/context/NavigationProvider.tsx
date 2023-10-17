@@ -4,28 +4,46 @@ import { Children } from 'react';
 import { BackHandler, TouchableWithoutFeedback, View } from "react-native";
 import { Text } from "react-native-svg";
 import tw from "twrnc";
-import AnimatedScreen from "../components/AnimatedScreen";
+import AnimatedScreen from "../components/view/AnimatedScreen";
 
 type Component = React.FC;
 
 const delay = 1000
 
 
+interface UseNavigation {
 
+    navigate: Navigate
+    screens: string[]
+
+}
+
+interface Navigate {
+
+    get: (name: string) => string | null;
+    isOpen: (name: string) => boolean;
+    open: (name: string) => void;
+    push: (name: string) => void;
+    close: (name: string) => void;
+    closeLast: () => void;
+    isLastScreen: () => boolean;
+
+}
 
 export const NavigationContext = createContext({});
 
-export const useNavigation = ():any => {
-    return useContext(NavigationContext);
+export const useNavigation = (): UseNavigation => {
+
+    return useContext(NavigationContext) as UseNavigation;
+
 };
 
 export const NavigationProvider = ({ children }:any) => {
 
-    
     const [ screens, setScreens ] = useState<string[]>([])
-    const [ loadContext, setLoadContext ] = useState(false)
 
     function navigateFunctions() {
+
         return {
 
             get: (name: string) => {
@@ -64,23 +82,21 @@ export const NavigationProvider = ({ children }:any) => {
 
             },
 
-            hasScreenOpen: (): boolean => {
+            isLastScreen: (): boolean => {
 
-                return screens.length > 0;
+                return screens.length == 1;
 
             }
 
         }
     }
 
-    const navigate = navigateFunctions();
+    const navigate: Navigate = navigateFunctions();
 
     function onBackPress() {
 
-        // close the last screen when the gesture is made
-        const hasLastScreen = navigate.closeLast()
-
-        if(!navigate.hasScreenOpen()) BackHandler.exitApp()
+        if(navigate.isLastScreen()) BackHandler.exitApp()
+        else navigate.closeLast()
 
         return true;
     
@@ -96,9 +112,9 @@ export const NavigationProvider = ({ children }:any) => {
     
     return (
 
-        <NavigationContext.Provider value={{navigate, screens, loadContext}}>
+        <NavigationContext.Provider value={{ navigate, screens }}>
 
-                {children}
+            {children}
 
         </NavigationContext.Provider>
         

@@ -26,7 +26,7 @@ interface Props {
 
 const EditListScreen = ({ selectedList, loadLists}: Props) => {
 
-  const { navigate, screens } = useNavigation()
+  const { navigate } = useNavigation()
 
   // ------------animation--------------//
   const positionScreen = useRef(new Animated.Value(400)).current;
@@ -168,7 +168,7 @@ const EditListScreen = ({ selectedList, loadLists}: Props) => {
   },[])
 
   return (
-
+    
     <Animated.View style={[tw`top-0 z-1 bg-slate-200 w-full h-full absolute`, { transform: [{translateX: positionScreen}], }]}>
       <View style={tw`w-full h-full relative`}>
 

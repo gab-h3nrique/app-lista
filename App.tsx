@@ -1,32 +1,46 @@
 
-import React, { useState } from 'react';
-import HomeScreen from './src/screens/HomeScreen';
-import { Storage, storageProvider } from './src/libs/storage';
+import { TouchableOpacity, View } from 'react-native';
 import Layout from './src/components/Layout';
-import Tabs from './src/components/navigation/Tabs';
-import ListScreen from './src/screens/lists/ListScreen';
+import { NavigationProvider } from './src/context/NavigationProvider';
+import Index from './src/screens/Index';
+import { useAppColorScheme, useDeviceContext } from 'twrnc';
+import { ThemeProvider, useTheme } from './src/context/ThemeProvider';
+import tw from './src/libs/tailwind';
+import Storage from './src/providers/storage/storage';
+import { useEffect } from 'react';
 
 function App(): JSX.Element {
 
-  const [ screen, setScreen ] = useState("homeScreen")
+  // const { theme, setAppTheme } = useTheme()
+  
+  // // const [colorScheme, toggleColorScheme, setColorScheme] = useAppColorScheme(tw, Storage.storage.getItem('THEME'));
+
+  // function setTheme() {
+
+  //   setAppTheme(Storage.storage.getItem('THEME'))
+
+  // }
+
+  // useEffect(()=>{
+
+  //   setTheme()
+    
+
+  // }, [])
 
   return (
+    
+    <NavigationProvider>
+      <ThemeProvider>
 
-    <Layout>
+      <Layout>
 
-      {/* <HomeScreen open={screen == 'homeScreen' ? true : false }/>
-      <ListScreen open={screen == 'listScreen' ? true : false }/> */}
-      {
-        screen == 'homeScreen' ? <HomeScreen/> :
-        screen == 'listScreen' ? <ListScreen/>
-        : null
+        <Index/>
 
+      </Layout>
 
-      }
-
-      <Tabs screen={screen} setScreen={setScreen}/>
-
-    </Layout>
+      </ThemeProvider>
+    </NavigationProvider>
 
   );
 

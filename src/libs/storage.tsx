@@ -3,10 +3,6 @@ import { MMKV } from 'react-native-mmkv'
 export const storageProvider = new MMKV();
 
 
-
-
-
-
 //###################### LIST ######################//
 const LISTS = 'USER_LISTS';
 const ITENS = 'USER_ITENS';
