@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import Layout from '../components/Layout'
-import HomeScreen from './HomeScreen'
+import HomeScreen from './home/HomeScreen'
 import ListScreen from './lists/ListScreen'
 import { useNavigation } from '../context/NavigationProvider'
 import Tabs from '../components/navigation/Tabs'

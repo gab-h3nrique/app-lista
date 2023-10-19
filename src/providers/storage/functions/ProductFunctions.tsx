@@ -111,6 +111,18 @@ function functions() {
 
         },
 
+        getByCategory(categoryId: number): Product[] {
+            
+            try{
+                
+                const data = GET_ALL()
+    
+                return data.filter(li=> li.categoryId === categoryId )
+
+            } catch(error) { console.log('erro in update product on storage', error); return [] }
+
+        },
+
     }
 
 }

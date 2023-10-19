@@ -1,10 +1,6 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 
-import { Children } from 'react';
 import { BackHandler, TouchableWithoutFeedback, View } from "react-native";
-import { Text } from "react-native-svg";
-import tw from "twrnc";
-import AnimatedScreen from "../components/view/AnimatedScreen";
 
 type Component = React.FC;
 

@@ -36,7 +36,7 @@ function functionList() {
 
     const GET_ALL_ITENS = (): Item[] => AsyncStorageFunctions.getItem(ITENS)
 
-    const GET_BY_LIST_ID = (id : number): Item[] => AsyncStorageFunctions.getItem(ITENS).filter((e: Item)=> e.listId === id)
+    const GET_BY_LIST_ID = (id : number): Item[] => (AsyncStorageFunctions.getItem(ITENS) || []).filter((e: Item)=> e.listId === id)
 
     return {
 
@@ -50,7 +50,7 @@ function functionList() {
 
                 return {...list, itens: GET_BY_LIST_ID(id) }
 
-            } catch(error) { console.log('erro in get list on storage', error); return null}
+            } catch(error) { console.error('erro in get list on storage', error); return null}
 
         },
 
@@ -59,7 +59,9 @@ function functionList() {
             try {
 
                 const data = GET_ALL()
-
+                
+                if(!data) return []
+                
                 let filteredList: List[];
 
                 if(name) filteredList = data.filter((e)=> e.name.includes(name))
@@ -69,7 +71,7 @@ function functionList() {
 
                 return newList
 
-            } catch(error) { console.log('erro in getMany list on storage', error); return []}
+            } catch(error) { console.error('erro in getMany list on storage', error); return []}
 
         },
 
@@ -98,7 +100,7 @@ function functionList() {
 
                 return GET_BY_ID(id)
 
-            } catch(error) { console.log('erro in create list on storage', error); return null }
+            } catch(error) { console.error('erro in create list on storage', error); return null }
 
         },
 
@@ -114,7 +116,7 @@ function functionList() {
     
                 return GET_BY_ID(id)
 
-            } catch(error) { console.log('erro in update list on storage', error); return null }
+            } catch(error) { console.error('erro in update list on storage', error); return null }
 
         },
 
@@ -128,7 +130,7 @@ function functionList() {
     
                 return !GET_BY_ID(id) ? true : false;
 
-            } catch(error) { console.log('erro in delete List on storage', error); return false }
+            } catch(error) { console.error('erro in delete List on storage', error); return false }
 
 
         },
@@ -154,7 +156,7 @@ function functionItem() {
 
                 return GET_BY_ID(id) || null
 
-            } catch(error) { console.log('erro in get Item on storage', error); return null}
+            } catch(error) { console.error('erro in get Item on storage', error); return null}
 
         },
 
@@ -163,12 +165,14 @@ function functionItem() {
             try {
 
                 const data = GET_ALL()
+
+                if(!data) return [];
     
                 if(name) return data.filter(li => li.name.includes(name))
                 
                 return data
 
-            } catch(error) { console.log('erro in get Item on storage', error); return []}
+            } catch(error) { console.error('erro in get Item on storage', error); return []}
 
         },
 
@@ -186,7 +190,7 @@ function functionItem() {
     
                 return GET_BY_ID(id)
 
-            } catch(error) { console.log('erro in create Item on storage', error); return null }
+            } catch(error) { console.error('erro in create Item on storage', error); return null }
 
         },
 
@@ -202,7 +206,7 @@ function functionItem() {
     
                 return GET_BY_ID(id)
 
-            } catch(error) { console.log('erro in update Item on storage', error); return null }
+            } catch(error) { console.error('erro in update Item on storage', error); return null }
 
         },
 
@@ -216,7 +220,7 @@ function functionItem() {
     
                 return !GET_BY_ID(id) ? true : false;
 
-            } catch(error) { console.log('erro in delete Item on storage', error); return false }
+            } catch(error) { console.error('erro in delete Item on storage', error); return false }
 
 
         },
@@ -229,7 +233,19 @@ function functionItem() {
     
                 return data.filter(li=> li.name.includes(name))
 
-            } catch(error) { console.log('erro in update Item on storage', error); return [] }
+            } catch(error) { console.error('erro in update Item on storage', error); return [] }
+
+        },
+
+        getByList(listId: number): Item[] {
+            
+            try{
+                
+                const data = GET_ALL()
+    
+                return data.filter(li=> li.listId == listId)
+
+            } catch(error) { console.error('erro in update Item on storage', error); return [] }
 
         },
 

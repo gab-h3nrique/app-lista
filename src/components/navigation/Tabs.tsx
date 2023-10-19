@@ -8,7 +8,7 @@ import Button from '../buttons/Button';
 import { useNavigation } from '../../context/NavigationProvider';
 import { useTheme } from '../../context/ThemeProvider';
 import tw from '../../libs/tailwind';
-import LocationDotSvg from '../svg/icons/LocationdotSvg';
+import LocationDotSvg from '../svg/icons/LocationDotSvg';
 
 const {UIManager} = NativeModules;
 
@@ -56,19 +56,19 @@ const Tabs = () => {
 
 
       <Button onPress={()=> switchTo('HomeScreen')}>
-        <HouseSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen ? '#8B5CF6' : '#94A3B8') : ( selectedScreen ? '#A78BFA' : '#D1D5DB') }/>
+        <HouseSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'HomeScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'HomeScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
       <Button onPress={()=> switchTo('ListScreen')}>
-        <ListSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen ? '#8B5CF6' : '#94A3B8') : ( selectedScreen ? '#A78BFA' : '#D1D5DB') }/>
+        <ListSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'ListScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'ListScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
       <Button onPress={()=> switchTo('HomeScreen')}>
-        <LocationDotSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen ? '#8B5CF6' : '#94A3B8') : ( selectedScreen ? '#A78BFA' : '#D1D5DB') }/>
+        <LocationDotSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'MapScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'MapScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
       <Button onPress={()=> switchTo('UserScreen')}>
-        <UserSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen ? '#8B5CF6' : '#94A3B8') : ( selectedScreen ? '#A78BFA' : '#D1D5DB') }/>
+        <UserSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'UserScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'UserScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
 

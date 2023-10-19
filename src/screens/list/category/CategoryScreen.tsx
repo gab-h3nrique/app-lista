@@ -1,14 +1,18 @@
-import { View, Text, TouchableWithoutFeedback, NativeModules, Animated, Image, StyleSheet, Pressable } from 'react-native'
+import { View, Text, TouchableWithoutFeedback, NativeModules, Animated, Image, StyleSheet, Pressable, FlatList } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import tw from 'twrnc';
 import ArrowSvg from '../../../components/svg/icons/ArrowSvg';
-import { Storage, Category } from '../../../libs/storage';
 import ShoppingSvg from '../../../components/svg/icons/ShoppingSvg';
 import ChevronSvg from '../../../components/svg/icons/ChevronSvg';
 import { useNavigation } from '../../../context/NavigationProvider';
 import PlusSvg from '../../../components/svg/icons/PlusSvg';
 import SearchSvg from '../../../components/svg/icons/SearchSvg';
 import PenSvg from '../../../components/svg/icons/PenSvg';
+import { useTheme } from '../../../context/ThemeProvider';
+import tw from '../../../libs/tailwind';
+import ItemComponent from './ItemComponent';
+import Button from '../../../components/buttons/Button';
+import { Category } from '../../../providers/storage/functions/CategoryFunctions';
+import Storage from '../../../providers/storage/storage';
 
 const { UIManager } = NativeModules;
 
@@ -23,6 +27,8 @@ interface Props {
 const CategoryScreen = ({ selectCategory }: Props) => {
 
   const { navigate, screens } = useNavigation()
+  const { theme } = useTheme()
+
   // ------------animation--------------//
   const positionScreen = useRef(new Animated.Value(400)).current;
 
@@ -53,20 +59,24 @@ const CategoryScreen = ({ selectCategory }: Props) => {
     <>
       <Animated.View style={[tw`w-full h-full flex absolute`, { transform: [{translateX: positionScreen}], }]}>
 
-        <View style={tw`p-3 gap-5 w-full h-full bg-slate-200`}>
+        <View style={tw`p-3 gap-5 w-full h-full bg-slate-200 dark:bg-slate-800`}>
 
           <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-            <View style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 flex items-center justify-center absolute`} >
-              <TouchableWithoutFeedback onPress={()=> navigate.close('CategoryScreen')}>
-                <ChevronSvg height={20} width={20} fill={'white'} style={{ transform: [{ rotateY: '180deg' }] }}/>
-              </TouchableWithoutFeedback>
-            </View>
+            <Button onPress={()=> navigate.close('CategoryScreen')} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+              <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
+            </Button>
 
-            <Text  style={tw`text-slate-500 text-[2rem] text-center font-bold `}>Categorias</Text>
+            <Text style={tw`text-slate-500 dark:text-slate-300 text-[2rem] text-center font-bold `}>Categorias</Text>
+
           </View>
 
-          <View style={tw`gap-4 flex justify-start items-center`}>
+          <FlatList data={categories} style={tw`gap-2 flex-1 w-full h-full`}
+          renderItem={({item}) => <ItemComponent item={item} onPress={() => selectCategory(item)} />}
+          keyExtractor={(item, index) => String(index)}
+          />
+
+          {/* <View style={tw`gap-4 flex justify-start items-center`}>
 
             {
               categories.length > 0 ? 
@@ -102,19 +112,19 @@ const CategoryScreen = ({ selectCategory }: Props) => {
             }
 
 
-          </View>
+          </View> */}
 
         </View>
 
         <View style={tw`gap-2 flex items-center bottom-6 right-3 absolute`}>
 
-          <Pressable  onPress={() => {navigate.open('CategoryScreen'), navigate.open('itensScreen')}} style={tw`w-8 h-8 rounded-full flex justify-center items-center bg-slate-400`}>
-            <PenSvg height={13} width={13} fill={'white'}/>
-          </Pressable>
+          <Button onPress={() => {navigate.open('CategoryScreen'), navigate.open('itensScreen')}} style={tw`w-8 h-8 rounded-full flex justify-center items-center bg-slate-400 dark:bg-slate-700`}>
+            <PenSvg height={13} width={13} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'}/>
+          </Button>
 
-          <Pressable onPress={() => {navigate.open('CategoryScreen'), navigate.open('itensScreen')}} style={tw`w-16 h-16 rounded-full flex justify-center items-center bg-violet-400`} >
-            <SearchSvg height={30} width={30} fill={'white'}/>
-          </Pressable>
+          <Button onPress={() => {navigate.open('CategoryScreen'), navigate.open('itensScreen')}} style={tw`w-16 h-16 rounded-full flex justify-center items-center bg-violet-400`} >
+            <SearchSvg height={30} width={30} fill={theme == 'dark' ? '#334155':'#FFFFFF'}/>
+          </Button>
           
         </View>
 

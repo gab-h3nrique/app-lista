@@ -7,16 +7,12 @@ const ConfigScreen = () => {
   return (
 
     <>
-      <ScreenLayout>
 
           <View>
             <Text>configurações</Text>
-            
           </View>
 
-      </ScreenLayout>
 
-      <Tabs screen={"settings"}/>
     </>
 
   )
