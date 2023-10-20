@@ -16,20 +16,18 @@ import { Category } from '../../providers/storage/functions/CategoryFunctions';
 import { Item, List } from '../../providers/storage/functions/UserStorageFunctions';
 import { Product } from '../../providers/storage/functions/ProductFunctions';
 import Storage from '../../providers/storage/storage';
+import { User, useUser } from '../../context/UserProvider';
 
 const { UIManager } = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
-interface Props {
-  selectedList: List | null
-  loadLists: any
-}
 
-const EditListScreen = ({ selectedList, loadLists}: Props) => {
+const EditListScreen = () => {
 
   const { navigate } = useNavigation()
   const { theme } = useTheme()
+  const { user, setUser } = useUser()
 
   // ------------animation--------------//
   const positionScreen = useRef(new Animated.Value(400)).current;
@@ -49,21 +47,28 @@ const EditListScreen = ({ selectedList, loadLists}: Props) => {
 
   function getListItens() {
 
-    if(!selectedList) return;
 
-    setSelectedListItens(()=> Storage.Item.getByList(selectedList.id))
+    // setSelectedListItens(()=> Storage.Item.getByList(user.selectedList.id))
 
   }
 
   function editSelectedList(list: List) {
 
-    if(!selectedList) return console.warn('this list is null')
+    if(!user.selectedList) return console.warn('this list is null')
 
     const updatedList = Storage.List.update(list.id, list)
 
     if(!updatedList) return console.warn('error updating list')
 
-    loadLists()
+    setUser((u: User)=>{
+
+      return {
+        ...u, 
+        // lists: u.lists.map((e)=> e.id === updatedList.id ? updatedList : e), 
+        selectedList: updatedList
+      }
+
+    })
 
   }
 
@@ -115,15 +120,28 @@ const EditListScreen = ({ selectedList, loadLists}: Props) => {
 
   function addItem(item: Item) {
 
-    if(!selectedList) return console.warn('this list is null')
+    if(!user.selectedList) return console.warn('this list is null')
 
-    const newItem = Storage.Item.create({...item, listId: selectedList.id})
+    const newItem = Storage.Item.create({...item, listId: user.selectedList.id})
 
     if(!newItem) return console.warn('error creating item')
 
-    getListItens()
+    let newItemArray: Item[] = []
 
-    loadLists()
+    if(user.selectedList.itens) newItemArray = [newItem, ...user.selectedList.itens]
+    else newItemArray = [newItem]
+
+    setUser((u: User)=>{
+
+      return {
+        ...u, 
+        // lists: Storage.List.getMany(),
+        selectedList: {...u.selectedList, itens: newItemArray}
+      }
+
+    })
+
+    // getListItens()
 
     navigate.close('CategoryScreen')
     navigate.close('ItensScreen')
@@ -149,9 +167,20 @@ const EditListScreen = ({ selectedList, loadLists}: Props) => {
 
     if(!isDeleted) return console.warn('error removing item')
 
-    getListItens()
+    setUser((u: User)=>{
 
-    loadLists()
+      return {
+        ...u, 
+        // lists: Storage.List.getMany(),
+        selectedList: {
+          ...u.selectedList, 
+          itens:  u.selectedList && u.selectedList.itens ? u.selectedList?.itens.filter((e)=> e.id !== id) : [],
+        }
+      }
+
+    })
+
+    // getListItens()
 
     navigate.close('EditItemScreen')
 
@@ -164,11 +193,6 @@ const EditListScreen = ({ selectedList, loadLists}: Props) => {
 
   },[navigate.isOpen('EditListScreen')])
 
-  useEffect(()=>{
-    
-    console.debug('2--------------EditListScreen')
-
-  },[])
 
   return (
     
@@ -181,7 +205,7 @@ const EditListScreen = ({ selectedList, loadLists}: Props) => {
             <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
           </Button>
 
-          <TextInput onChangeText={(event)=> selectedList && editSelectedList({...selectedList, name: event})} value={selectedList?.name} style={tw`text-slate-400 dark:text-slate-300 text-center font-bold text-[1.2rem]`}/>
+          <TextInput onChangeText={(event)=> user.selectedList && editSelectedList({...user.selectedList, name: event})} value={user.selectedList?.name} style={tw`text-slate-400 dark:text-slate-300 text-center font-bold text-[1.2rem]`}/>
 
         </View>
 

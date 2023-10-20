@@ -12,6 +12,7 @@ import { useTheme } from '../../context/ThemeProvider';
 import ListItemComponent from './components/ListItemComponent';
 import { List } from '../../providers/storage/functions/UserStorageFunctions';
 import Storage from '../../providers/storage/storage';
+import { User, useUser } from '../../context/UserProvider';
 
 const { UIManager } = NativeModules;
 
@@ -21,70 +22,60 @@ const ListScreen = () => {
   
   const { navigate } = useNavigation()
   const { theme } = useTheme()
+  const { user, setUser } = useUser()
 
   // ------------animation--------------//
-  const positionScreen = useRef(new Animated.Value(400)).current;
-  function changeScreen() {
+  // const positionScreen = useRef(new Animated.Value(400)).current;
+  // function changeScreen() {
 
-    if(navigate.isOpen('ListScreen')) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
-    if(!navigate.isOpen('ListScreen')) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
+  //   if(navigate.isOpen('ListScreen')) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
+  //   if(!navigate.isOpen('ListScreen')) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
   
-  }
+  // }
   // ------------animation--------------//
 
-  const [ listState, setListState ] = useState<List[]>(Storage.List.getMany())
-  const [ selectedList, setSelectedList ] = useState<List>()
-
-  function loadLists() {
-
-    setListState(()=> Storage.List.getMany())
-
-  }
-
-  async function createNewList() {
-
-
-    // const data = `${new Date().getUTCDate()}/${new Date().getUTCMonth()+1}/${new Date().getUTCFullYear()}`
+  function createNewList() {
 
     const newList = Storage.List.create({name: `Nova lista`, checked: false})
 
     if(!newList) return console.warn('list was not created')
 
-    setListState((li)=>[newList, ...li])
-
-    setSelectedList(newList)
+    setUser((u: User)=>{
+      return {...u, lists: [newList, ...u.lists], selectedList: newList}
+    })
 
     navigate.open('EditListScreen')
 
   }
 
-  async function saveSelectedList(list: List) {
+  function saveSelectedList(list: List) {
 
-    setSelectedList(()=> list)
-    setListState((e)=> e.map((e)=> e.id === list.id ? list : e))
+    // setSelectedList(()=> list)
+    // setListState((e)=> e.map((e)=> e.id === list.id ? list : e))
+
+    setUser((u: User)=>{
+      return {...u, selectedList: list}
+    })
 
   }
 
   async function openEditList(list: List) {
 
-    setSelectedList(()=> list)
+    // setSelectedList(()=> list)
+
+    setUser((u: User)=>{
+      return {...u, selectedList: list}
+    })
 
     navigate.open('EditListScreen')
 
   }
 
-  useEffect(()=>{
+  // useEffect(()=>{
     
-    changeScreen()
+  //   changeScreen()
 
-  },[navigate.isOpen('ListScreen')])
-
-  useEffect(()=>{
-
-    console.debug('2--------------EditListScreen')
-    loadLists()
-
-  },[])
+  // },[navigate.isOpen('ListScreen')])
 
   return (
     <>
@@ -130,7 +121,7 @@ const ListScreen = () => {
               <View style={tw`mb-[3.5rem] p-4 gap-3 flex justify-start items-center w-full h-full`}>
 
                 {
-                  listState.length > 0 ? listState.map((e: List, i) => 
+                  user.lists.length > 0 ? user.lists.map((e: List, i) => 
                     <React.Fragment key={i}>
                       <ListItemComponent item={e} onPress={() => openEditList(e)} /> 
                     </React.Fragment>
@@ -170,7 +161,7 @@ const ListScreen = () => {
 
       </AnimatedScreen>
 
-      <EditListScreen selectedList={selectedList || null} loadLists={loadLists}/>
+      <EditListScreen/>
 
     </>
 
