@@ -30,7 +30,7 @@ function functions() {
 
                 return GET_BY_ID(id) || null
 
-            } catch(error) { console.log('erro in get product on storage', error); return null}
+            } catch(error) { console.error('erro in get product on storage', error); return null}
 
         },
 
@@ -44,7 +44,7 @@ function functions() {
                 
                 return data
 
-            } catch(error) { console.log('erro in get product on storage', error); return []}
+            } catch(error) { console.error('erro in get product on storage', error); return []}
 
         },
 
@@ -66,7 +66,7 @@ function functions() {
 
                 return GET_BY_ID(id)
 
-            } catch(error) { console.log('erro in create product on storage', error); return null }
+            } catch(error) { console.error('erro in create product on storage', error); return null }
 
         },
 
@@ -80,7 +80,7 @@ function functions() {
     
                 return GET_BY_ID(id)
 
-            } catch(error) { console.log('erro in update product on storage', error); return null }
+            } catch(error) { console.error('erro in update product on storage', error); return null }
 
         },
 
@@ -94,7 +94,7 @@ function functions() {
     
                 return !GET_BY_ID(id) ? true : false;
 
-            } catch(error) { console.log('erro in delete product on storage', error); return false }
+            } catch(error) { console.error('erro in delete product on storage', error); return false }
 
 
         },
@@ -104,10 +104,10 @@ function functions() {
             try{
                 
                 const data = GET_ALL()
-    
-                return data.filter(li=> li.name.includes(name))
 
-            } catch(error) { console.log('erro in update product on storage', error); return [] }
+                return data.filter(e=> e.name.includes(name))
+
+            } catch(error) { console.error('erro in update product on storage', error); return [] }
 
         },
 
@@ -116,10 +116,12 @@ function functions() {
             try{
                 
                 const data = GET_ALL()
-    
+
+                if(!data) return [];
+
                 return data.filter(li=> li.categoryId === categoryId )
 
-            } catch(error) { console.log('erro in update product on storage', error); return [] }
+            } catch(error) { console.error('erro in getByCategory product on storage', error); return [] }
 
         },
 

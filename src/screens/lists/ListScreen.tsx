@@ -24,15 +24,6 @@ const ListScreen = () => {
   const { theme } = useTheme()
   const { user, setUser } = useUser()
 
-  // ------------animation--------------//
-  // const positionScreen = useRef(new Animated.Value(400)).current;
-  // function changeScreen() {
-
-  //   if(navigate.isOpen('ListScreen')) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
-  //   if(!navigate.isOpen('ListScreen')) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
-  
-  // }
-  // ------------animation--------------//
 
   function createNewList() {
 

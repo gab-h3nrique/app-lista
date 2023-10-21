@@ -23,8 +23,9 @@ const AsyncStorageFunctions = {
 
         try {
 
-            const jsonValue = AsyncStorage.getString(key);
-            return jsonValue != null ? JSON.parse(jsonValue) : null;
+            const data = AsyncStorage.getString(key);
+            
+            return JSON.parse(data || '[]');
 
         
         } catch (error) { 

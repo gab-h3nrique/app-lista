@@ -30,9 +30,9 @@ const Layout = (props :Props) => {
 
     return (
 
-        <SafeAreaView style={[tw`flex-1 w-full h-full`, styles.safeArea]}>
+        <SafeAreaView style={[tw`flex-1 bg-slate-200 dark:bg-slate-800 w-full h-full`, styles.safeArea]}>
             <StatusBar translucent={true} backgroundColor={theme == 'dark' ? '#334155' : '#FFFFFF'} barStyle={theme == 'dark' ? 'light-content' : 'dark-content'} />
-            <View style={tw`flex bg-slate-200 dark:bg-slate-800 w-full h-full relative`}>
+            <View style={tw`flex w-full h-full relative`}>
 
                 {props.children}
 

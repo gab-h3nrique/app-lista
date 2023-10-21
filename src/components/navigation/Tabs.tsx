@@ -9,6 +9,7 @@ import { useNavigation } from '../../context/NavigationProvider';
 import { useTheme } from '../../context/ThemeProvider';
 import tw from '../../libs/tailwind';
 import LocationDotSvg from '../svg/icons/LocationDotSvg';
+import { useNavigation2 } from '../../context/NavigationProvider2';
 
 const {UIManager} = NativeModules;
 
@@ -16,14 +17,14 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 
 interface Props {
   screen: string;
-  setScreen: any;
+  setScreen?: any;
 }
 
 const Tabs = () => {
 
   const { theme } = useTheme()
 
-  const { navigate } = useNavigation()
+  const { screens, navigate } = useNavigation2()
 
   const [ selectedScreen, setSelectedScreen ] = useState('')
 
@@ -51,7 +52,7 @@ const Tabs = () => {
 
   return (
 
-    <View style={tw`py-3 px-6  rounded-t-[35px] bottom-0 absolute flex flex-row justify-between items-center w-full bg-white dark:bg-slate-700`}>
+    <View style={tw`py-3 px-6 rounded-t-[35px] bottom-0 absolute flex flex-row justify-between items-center w-full bg-white dark:bg-slate-700`}>
 
 
 
@@ -63,11 +64,11 @@ const Tabs = () => {
         <ListSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'ListScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'ListScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
-      <Button onPress={()=> switchTo('HomeScreen')}>
+      <Button onPress={()=> switchTo('MapScreen')}>
         <LocationDotSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'MapScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'MapScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
-      <Button onPress={()=> switchTo('UserScreen')}>
+      <Button onPress={()=> navigate.getAll()}>
         <UserSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'UserScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'UserScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 

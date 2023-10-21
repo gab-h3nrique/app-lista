@@ -27,11 +27,10 @@ console.debug('-------------------------renderizando app')
 //         {id: 1, name:'Pães', image: 'https://cdn-icons-png.flaticon.com/512/4670/4670821.png'},
 //         {id: 2, name:'Lácteos', image: 'https://cdn-icons-png.flaticon.com/512/3050/3050158.png'},
 //         {id: 3, name:'Frutas e legumes', image: 'https://cdn-icons-png.flaticon.com/512/3194/3194591.png'},
-//         {id: 4, name:'Frutas e legumes', image: 'https://cdn-icons-png.flaticon.com/512/3194/3194591.png'},
 //     ]
 // )
 
-// Storage.storage.setItem('PRODUCTS', JSON.stringify([
+// Storage.storage.setItem('PRODUCTS', [
 
 //   {id: 1, name: 'Pão Francês  400g', categoryId: 1, image: 'https://cdn-icons-png.flaticon.com/512/3014/3014538.png'},
 //   {id: 2, name: 'Pão Francês Tradicional 400g', categoryId: 1, image: 'https://cdn-icons-png.flaticon.com/512/2215/2215883.png'},
@@ -71,6 +70,6 @@ console.debug('-------------------------renderizando app')
 //   {id: 34, name: 'Rúcula', categoryId: 3, image: ''},
 //   {id: 35, name: 'Uvas', categoryId: 3, image: ''},
 
-// ]))
+// ])
 
 export default Storage

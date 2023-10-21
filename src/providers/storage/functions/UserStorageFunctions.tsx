@@ -6,7 +6,7 @@ const ITENS =  'USER_ITENS';
 export interface List {
     id: number; 
     name: string; 
-    itens?: Item[];
+    itens: Item[];
     checked: boolean; 
     updatedAt?: any;
     createdAt?: any;
@@ -92,6 +92,7 @@ function functionList() {
                     id: id,
                     name: notRepeatedName,
                     checked: list.checked,
+                    itens: [],
                     updatedAt: new Date().getTime(),
                     createdAt: new Date().getTime(),
                 }

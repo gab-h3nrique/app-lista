@@ -39,18 +39,9 @@ const EditListScreen = () => {
   }
   // ------------animation--------------//
 
-  const [ selectedListItens, setSelectedListItens ] = useState<Item[]>();
-
-
   const [ selectedCategory, setSelectedCategory ] = useState<Category>();
   const [ selectedItem, setSelectedItem ] = useState<Item>({name: '', checked: false, id: -1, price: 0, quantity: 0})
 
-  function getListItens() {
-
-
-    // setSelectedListItens(()=> Storage.Item.getByList(user.selectedList.id))
-
-  }
 
   function editSelectedList(list: List) {
 
@@ -155,7 +146,17 @@ const EditListScreen = () => {
 
     if(!editedItem) return console.warn('error editing item')
 
-    getListItens()
+    if(!user.selectedList) return console.warn('any list was selected')
+
+    const updatedList = Storage.List.get(user.selectedList.id)
+
+    setUser((e: User)=>{
+      return {
+        ...e, 
+        lists:  Storage.List.getMany(),
+        selectedList: updatedList
+      } as User
+    })
 
     navigate.close('EditItemScreen')
 
@@ -180,8 +181,6 @@ const EditListScreen = () => {
 
     })
 
-    // getListItens()
-
     navigate.close('EditItemScreen')
 
   }
@@ -189,7 +188,6 @@ const EditListScreen = () => {
   useEffect(()=>{
     
     changeScreen()
-    if(navigate.isOpen('EditListScreen')) getListItens()
 
   },[navigate.isOpen('EditListScreen')])
 
@@ -212,8 +210,9 @@ const EditListScreen = () => {
         <View style={tw`px-4 gap-3 flex justify-start items-center`}>
 
           {
-            selectedListItens && selectedListItens.length > 0 ? selectedListItens.map(( item, i) =>
-              <React.Fragment>
+
+            user.selectedList && user.selectedList.itens.length > 0 ? user.selectedList.itens.map(( item, i) =>
+              <React.Fragment key={i}>
                 <ItemListComponent item={item} onPress={() => openEditItemScreen(item)} onPressCheck={() => editItem({...item, checked: !item.checked})}/>
               </React.Fragment>
             )

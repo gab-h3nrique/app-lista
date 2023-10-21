@@ -5,11 +5,11 @@ import { Brand } from "../providers/storage/functions/BrandFunctions";
 import { Product } from "../providers/storage/functions/ProductFunctions";
 import Storage from "../providers/storage/storage";
 
-interface Data {
+export interface DataStorage {
 
-    Category: Category[],
-    Brand: Brand[],
-    Product: Product[],
+    category: Category[],
+    brand: Brand[],
+    product: Product[],
 
 }
 
@@ -17,28 +17,36 @@ export const DataStorage = createContext({});
 
 export const useDataStorage = () => {
 
-    return useContext(DataStorage) as { dataStorage: Data, setDataStorage: any };
+    return useContext(DataStorage) as { dataStorage: DataStorage, setDataStorage: any };
 
 };
 
 export const StorageDataProvider = ({ children }:any) => {
 
-    const [ dataStorage, setDataStorage ] = useState<Data>({
+    const [ dataStorage, setDataStorage ] = useState<DataStorage>({
 
-        Category: Storage.Category.getMany(),
-        Brand: Storage.Brand.getMany(),
-        Product: Storage.Product.getMany(),
+        category: Storage.Category.getMany(),
+        brand: Storage.Brand.getMany(),
+        product: Storage.Product.getMany(),
 
     })
+
+    // setDataStorage(()=>{
+    //     return {
+    //         category: Storage.Category.getMany(),
+    //         brand: Storage.Brand.getMany(),
+    //         product: Storage.Product.getMany(),
+    //     }
+    // })
 
 
     // const [ category, setCategory ] = useState<Category[]>()
     // const [ brand, setBrand ] = useState<Brand[]>()
     // const [ product, setProduct ] = useState<Product[]>()
-
     
 
     useEffect(()=>{
+
 
     },[dataStorage])
 

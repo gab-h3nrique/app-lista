@@ -1,12 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { List } from "../providers/storage/functions/UserStorageFunctions";
+import { Item, List } from "../providers/storage/functions/UserStorageFunctions";
 import Storage from "../providers/storage/storage";
+import { Category } from "../providers/storage/functions/CategoryFunctions";
 
 export interface User {
     name: string;
     token?: string;
-    selectedList: List | null;
     lists: List[];
+    selectedList: List | null;
+    selectedItem: Item | null;
+    selectedCategory: Category | null;
 }
 
 export const UserContext = createContext({});
@@ -23,8 +26,10 @@ export const UserProvider = ({ children }:any) => {
 
         name: '',
         token: '',
-        selectedList: null,
         lists: Storage.List.getMany(),
+        selectedList: null,
+        selectedItem: null,
+        selectedCategory: null,
 
     })
 
