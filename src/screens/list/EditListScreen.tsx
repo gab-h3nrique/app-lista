@@ -1,12 +1,7 @@
 import { View, Text, TouchableWithoutFeedback, TextInput, Image, BackHandler, NativeModules, Animated, Pressable } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import PlusSvg from '../../components/svg/icons/PlusSvg';
-import CategoryScreen from './category/CategoryScreen';
 import ChevronSvg from '../../components/svg/icons/ChevronSvg';
-import ItensScreen from './itens/ItensScreen';
-import QuantityScreen from './quantity/QuantityScreen';
-import EditItemScreen from './editItem/EditItemScreen';
-import { useNavigation } from '../../context/NavigationProvider';
 import Button from '../../components/buttons/Button';
 import tw from '../../libs/tailwind';
 import { useTheme } from '../../context/ThemeProvider';
@@ -17,31 +12,21 @@ import { Item, List } from '../../providers/storage/functions/UserStorageFunctio
 import { Product } from '../../providers/storage/functions/ProductFunctions';
 import Storage from '../../providers/storage/storage';
 import { User, useUser } from '../../context/UserProvider';
+import { useNavigation } from '../../context/navigation/NavigationProvider';
 
 const { UIManager } = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 
-const EditListScreen = () => {
+const EditListScreen = (props: any) => {
 
-  const { navigate } = useNavigation()
   const { theme } = useTheme()
   const { user, setUser } = useUser()
-
-  // ------------animation--------------//
-  const positionScreen = useRef(new Animated.Value(400)).current;
-  function changeScreen() {
-
-    if(navigate.isOpen('EditListScreen')) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false }).start();
-    if(!navigate.isOpen('EditListScreen')) Animated.timing(positionScreen, { toValue: 400, duration: 300, useNativeDriver: false}).start();
-  
-  }
-  // ------------animation--------------//
+  const { navigate } = useNavigation()
 
   const [ selectedCategory, setSelectedCategory ] = useState<Category>();
   const [ selectedItem, setSelectedItem ] = useState<Item>({name: '', checked: false, id: -1, price: 0, quantity: 0})
-
 
   function editSelectedList(list: List) {
 
@@ -185,17 +170,11 @@ const EditListScreen = () => {
 
   }
 
-  useEffect(()=>{
-    
-    changeScreen()
-
-  },[navigate.isOpen('EditListScreen')])
 
 
   return (
     
-    <Animated.View style={[tw`top-0 z-1 bg-slate-200 dark:bg-slate-800 w-full h-full absolute`, { transform: [{translateX: positionScreen}], }]}>
-      <View style={tw`w-full h-full relative`}>
+      <View style={tw`w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
 
         <View style={tw`p-3 justify-center items-center flex flex-row w-full relative`}>
 
@@ -240,19 +219,14 @@ const EditListScreen = () => {
             <PenSvg height={13} width={13} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'}/>
           </Button>
 
-          <Button onPress={() => {navigate.open('CategoryScreen'), navigate.open('itensScreen')}} style={tw`w-16 h-16 rounded-full flex justify-center items-center bg-violet-400`} >
+          <Button onPress={() => { navigate.open('CategoryScreen') }} style={tw`w-16 h-16 rounded-full flex justify-center items-center bg-violet-400`} >
             <PlusSvg height={38} width={38} fill={theme == 'dark' ? '#334155':'#FFFFFF'} style={{ transform: [{ rotateY: '180deg' }] }}/>
           </Button>
 
         </View>
 
-        <CategoryScreen selectCategory={selectCategory}/>
-        <ItensScreen category={selectedCategory || null} selectItem={selectItem}/>
-        <QuantityScreen item={selectedItem || null} selectQuantity={selectQuantity}/>
-        <EditItemScreen selectedItem={selectedItem} editItem={editItem} removeItem={removeItem}/>
-      
+
       </View>
-    </Animated.View>
 
   )
 }

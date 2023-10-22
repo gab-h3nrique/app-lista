@@ -3,15 +3,12 @@ import React from 'react'
 import tw from '../../libs/tailwind'
 
 import MapView, {Marker, enableLatestRenderer} from 'react-native-maps';
+import { useTheme } from '../../context/ThemeProvider';
 
 
 const MapScreen = () => {
 
-  // enableLatestRenderer();
-
-
-
-
+  const { theme } = useTheme()
 
 
   const initialRegion = {
@@ -23,12 +20,19 @@ const MapScreen = () => {
 
 
 
+
   return (
-    <View style={tw`flex w-full h-1/2`}>
-      <MapView provider={'google'} style={styles.map} initialRegion={initialRegion}>
-      <Marker coordinate={initialRegion} title='aa' description='bbb' image={{uri: 'https://cdn-icons-png.flaticon.com/512/3306/3306079.png'}}/>
-      </MapView>
+
+    <View style={tw`flex w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
+
+      <View style={tw`flex w-full h-1/2`}>
+        <MapView provider={'google'} style={styles.map} initialRegion={initialRegion}>
+          <Marker coordinate={initialRegion} title='aa' description='bbb' image={{uri: 'https://cdn-icons-png.flaticon.com/512/3306/3306079.png'}}/>
+        </MapView>
+      </View>
+
     </View>
+
   )
 
 }

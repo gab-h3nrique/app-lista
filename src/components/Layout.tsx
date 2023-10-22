@@ -46,7 +46,7 @@ const Layout = (props :Props) => {
 
 const styles = StyleSheet.create({
     safeArea:{
-        paddingTop: Platform.OS === 'android' ? 15 : 0
+        paddingTop: Platform.OS === 'android' ? 25 : 0
      }
 })
 

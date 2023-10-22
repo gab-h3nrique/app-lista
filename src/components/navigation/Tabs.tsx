@@ -5,11 +5,10 @@ import ListSvg from '../svg/icons/ListSvg';
 import HeartSvg from '../svg/icons/HeartSvg';
 import UserSvg from '../svg/icons/UserSvg';
 import Button from '../buttons/Button';
-import { useNavigation } from '../../context/NavigationProvider';
 import { useTheme } from '../../context/ThemeProvider';
 import tw from '../../libs/tailwind';
 import LocationDotSvg from '../svg/icons/LocationDotSvg';
-import { useNavigation2 } from '../../context/NavigationProvider2';
+import { useNavigation } from '../../context/navigation/NavigationProvider';
 
 const {UIManager} = NativeModules;
 
@@ -24,7 +23,7 @@ const Tabs = () => {
 
   const { theme } = useTheme()
 
-  const { screens, navigate } = useNavigation2()
+  const { screens, navigate } = useNavigation()
 
   const [ selectedScreen, setSelectedScreen ] = useState('')
 
@@ -52,7 +51,7 @@ const Tabs = () => {
 
   return (
 
-    <View style={tw`py-3 px-6 rounded-t-[35px] bottom-0 absolute flex flex-row justify-between items-center w-full bg-white dark:bg-slate-700`}>
+    <View style={[tw`py-3 px-6 rounded-t-[35px] bottom-0 absolute flex flex-row justify-between items-center w-full bg-white dark:bg-slate-700`, {zIndex: 0}]}>
 
 
 
@@ -68,59 +67,11 @@ const Tabs = () => {
         <LocationDotSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'MapScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'MapScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
-      <Button onPress={()=> navigate.getAll()}>
+      <Button onPress={()=> switchTo('UserScreen')}>
         <UserSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'UserScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'UserScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
-
-
     </View>
-
-    // <View style={tw`bottom-0 p-4 flex flex-row items-center justify-between gap-2 w-full bg-white dark:bg-black rounded-t-[35px] absolute`}>
-      
-
-
-    //   <View style={tw`gap-5 flex flex-row`}>
-
-    //     {/* home button */}
-    //     <Button onPress={()=> switchTo('HomeScreen')}>
-    //       <Animated.View style={[tw``,{opacity: homeOpacity, transform:[{scale: homeScale}] }]}>
-    //         <HouseSvg height={30} fill={'#a78bfa'}/>
-    //       </Animated.View>
-    //     </Button>
-    //     {/* home button */}
-
-    //     {/* list button */}
-    //     <Button onPress={()=> switchTo('ListScreen')}>
-    //       <Animated.View style={{opacity: listOpacity, transform:[{scale: listScale}] }}>
-    //         <ListSvg height={30} fill={'#a78bfa'}/>
-    //       </Animated.View>
-    //     </Button>
-    //     {/* list button */}
-
-    //   </View>
-      
-    //   <View style={tw`gap-5 flex flex-row`}>
-          
-    //     {/* favorite button */}
-    //     <Button onPress={()=>{}}>
-    //       <Animated.View style={{opacity: favoriteOpacity, transform:[{scale: favoriteScale}] }}>
-    //         <HeartSvg height={30} fill={'#a78bfa'}/>
-    //       </Animated.View>
-    //     </Button>
-    //     {/* favorite button */}
-
-    //     {/* user button */}
-    //     <Button onPress={()=> switchTo('UserScreen')}>
-    //       <Animated.View style={{opacity: userOpacity, transform:[{scale: userScale}] }}>
-    //         <UserSvg height={30} fill={'#a78bfa'}/>
-    //       </Animated.View>
-    //     </Button>
-    //      {/* user button */}
-
-    //   </View>
-
-    // </View>
 
   )
 }

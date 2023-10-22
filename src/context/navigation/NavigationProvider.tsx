@@ -1,13 +1,11 @@
-import React, { ReactNode, Children, createContext, useContext, useEffect, useState } from "react";
+import React, { ReactNode, Children, createContext, useContext, useEffect, useState, ElementType } from "react";
 
 import { BackHandler, TouchableWithoutFeedback, View } from "react-native";
-import tw from "../libs/tailwind";
-import Tabs from "../components/navigation/Tabs";
 
+import NavigateStack from "./StackNavigation";
+import TabNavigation from "./TabNavigation";
+import tw from "../../libs/tailwind";
 
-type Component = React.FC;
-
-const delay = 1000
 
 
 interface UseNavigation {
@@ -23,17 +21,23 @@ interface Navigate {
     getAll: () => any;
     isOpen: (name: string) => boolean;
     isFocused: (name: string) => boolean;
-    open: (name: string) => void;
-    push: (name: string) => void;
+    open: (name: string, props?: any) => void;
+    push: (name: string, props?: any) => void;
     close: (name: string) => void;
     closeLast: () => void;
     isLastScreen: () => boolean;
 
 }
 
-export const NavigationContext = createContext({});
+interface Props {
 
-export const useNavigation2 = () => {
+    tab?: ElementType;
+    children: ReactNode[]
+}
+
+const NavigationContext = createContext({});
+
+export const useNavigation = () => {
 
     const { navigate, screens } = useContext(NavigationContext) as UseNavigation;
 
@@ -41,13 +45,9 @@ export const useNavigation2 = () => {
 
 };
 
-interface Props {
-    children: ReactNode 
-}
+const NavigationProvider = ({ tab: Tab ,children }: Props) => {
 
-export const NavigationProvider2 = ({ children }: Props) => {
-
-
+    const delay = 1000
 
     let lastChild: any = [];
 
@@ -63,7 +63,7 @@ export const NavigationProvider2 = ({ children }: Props) => {
 
 
 
-    function navigateFunctions() {
+    function navigateFunctions(): Navigate {
 
         return {
 
@@ -96,34 +96,50 @@ export const NavigationProvider2 = ({ children }: Props) => {
             },
 
             // cuidado para nao passar nome errado da tela 
-            open: (name: string) => {
+            open: (name: string, props?: any) => {
 
+                let foundChild: boolean = false;
+
+                Children.forEach(children, (child:any, index) => {
+
+                    if(child.props.name == name) foundChild = true;
+
+                });
+
+                if(!foundChild) return console.error(`Não existe nenhum componente com este nome: ${name}\n Verifique se o nome passado para <Navigation.Stack nome={'nomeExemplo'} esteja correto com o nome passado no navigate.open('nomeExemplo)`)
 
                 setScreens((sc)=> [...sc.filter(s=> s != name), name])
-
-                console.log('ch', childrenArray)
 
                 setChildrenArray(()=> {
 
 
-                    let newChild;
+                    let newChild: any;
+                    let teste: any;
 
                     Children.forEach(children, (child:any, index) => {
 
-                        if(child.props.name == name) newChild = child;
+                        if(child.props.name == name) newChild = {...child, props: {...child.props, data: props}};
 
                     });
                     
-
                     if(newChild) return [...childrenArray.filter((s: any)=> s.props.name !== name), newChild]
-
 
                 })
 
 
             },
 
-            push: (name: string) => {
+            push: (name: string, props?: any) => {
+
+                let foundChild: boolean = false;
+
+                Children.forEach(children, (child:any, index) => {
+
+                    if(child.props.name == name) foundChild = true;
+
+                });
+
+                if(!foundChild) return console.error(`Não existe nenhum componente com este nome: ${name}\n Verifique se o nome passado para <Navigation.Stack nome={'nomeExemplo'} esteja correto com o nome passado no navigate.open('nomeExemplo)`)
 
                 setScreens((sc)=> [name])
 
@@ -133,25 +149,23 @@ export const NavigationProvider2 = ({ children }: Props) => {
 
                     Children.forEach(children, (child:any, i) => {
                 
-                        if(child.props.name === name) filteredChild = child
+                        if(child.props.name === name) filteredChild = {...child, props: {...child.props, data: props}};
                 
                     });
 
                     setChildrenArray(()=> [filteredChild])
 
-                }, delay)
+                }, 0)
 
             },
 
             close: (name: string) => {
 
-                setScreens((sc)=>[...sc.filter((s)=> s !== name)])
+                setScreens((e)=>[...e.filter((s)=> s !== name)])
 
                 setTimeout(()=>{
 
                     setChildrenArray((e:any)=> {
-    
-                        console.log('teste', e[0].props);
     
                         return e.filter((s: any)=> s.props.name !== name)
     
@@ -159,18 +173,17 @@ export const NavigationProvider2 = ({ children }: Props) => {
 
                 }, delay)
 
-
             },
 
             closeLast: () => {
 
-                setScreens((sc)=> sc.filter((s,i)=> i !==  0))
+                setScreens((e)=> e.filter((s,i)=> i !==  (e.length -1)))
 
                 setTimeout(()=>{
 
                     setChildrenArray((e: any)=> {
                         
-                        return e.filter((s: any, i:number)=> i !==  0)
+                        return e.filter((s: any, i:number)=> i !== (e.length -1))
     
                     })
 
@@ -187,7 +200,7 @@ export const NavigationProvider2 = ({ children }: Props) => {
         }
     }
 
-    const navigate: Navigate = navigateFunctions();
+    const navigate = navigateFunctions();
 
     function onBackPress() {
 
@@ -197,16 +210,22 @@ export const NavigationProvider2 = ({ children }: Props) => {
         return true;
     
     };
-    
+
     BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    useEffect(()=> {
+    },[])
+    console.log('--------------------- renderizou navigate')
     
     return (
 
         <NavigationContext.Provider value={{ navigate, screens }}>
 
+
             {childrenArray}
 
-            <Tabs/>
+            {Tab && <Tab/>}
+
 
         </NavigationContext.Provider>
         
@@ -215,13 +234,10 @@ export const NavigationProvider2 = ({ children }: Props) => {
 }
 
 
-export default NavigationProvider2
+export const Navigation = {
 
-
-export function StackContainer(props: { children: ReactNode, type?: string } ) {
-
-    props.type = 'screens'
-
-  return props.children
+    Context: NavigationProvider,
+    Stack: NavigateStack,
+    
 }
 
