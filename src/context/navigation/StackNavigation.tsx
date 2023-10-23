@@ -59,14 +59,14 @@ const StackNavigation = memo(function StackNavigation({ name, component: Compone
         // start open animation
         if(navigate.isOpen(name)) openAnimate();
 
-        // start not focused animation
+        // // start not focused animation
         if(!navigate.isFocused(name)) lostFocus()
 
         // start close animation
         if(!navigate.isOpen(name)) closeAnimate();
 
-        // [screens] is more slow than [navigate.get(name)]
-    }, [screens])
+        // [navigate.get(name), !navigate.isFocused(name)] is more slow than [navigate.get(name)]
+    }, [navigate.get(name), !navigate.isFocused(name)])
 
     return (
 

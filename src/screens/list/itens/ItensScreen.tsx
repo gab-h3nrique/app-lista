@@ -25,9 +25,7 @@ interface Props {
 
 }
 
-
-
-const ItensScreen = memo(function ItensScreen(props: any) {
+const ItensScreen = (props: any) => {
 
   const { theme } = useTheme()
   const { user, setUser } = useUser()
@@ -35,17 +33,17 @@ const ItensScreen = memo(function ItensScreen(props: any) {
 
   const { navigate, screens } = useNavigation()
 
-  const [ itens, setItens ] = useState<Product[]>([])
+  // const [ itens, setItens ] = useState<Product[]>([])
 
   // let itens: Product[] = []
-  // let itens: Product[] = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
+  let itens: Product[] = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
 
-  setTimeout(()=>{
+  // setTimeout(()=>{
 
-    // itens = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
-    setItens(()=>dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e ))
+  //   // itens = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
+  //   setItens(()=>dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e ))
 
-  }, 800)
+  // }, 800)
    
   return (
 
@@ -168,7 +166,7 @@ const ItensScreen = memo(function ItensScreen(props: any) {
     // </View>
 
   )
-})
+}
 
-export default ItensScreen
+export default memo(ItensScreen)
 

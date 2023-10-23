@@ -1,5 +1,5 @@
 import { FlatList, ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import ShoppingSvg from '../../components/svg/icons/ShoppingSvg';
 import PlusSvg from '../../components/svg/icons/PlusSvg';
 import Button from '../../components/buttons/Button';
@@ -130,4 +130,4 @@ const ListScreen = () => {
   )
 }
 
-export default ListScreen
+export default memo(ListScreen)
