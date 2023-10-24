@@ -10,20 +10,20 @@ import tw from "../../libs/tailwind";
 
 interface UseNavigation {
 
-    navigate: Navigate
-    screens: string[]
+    navigate: Navigate;
+    screens: string[];
 
 }
 
 interface Navigate {
 
     get: (name: string) => string | null;
-    getAll: () => any;
     isOpen: (name: string) => boolean;
     isFocused: (name: string) => boolean;
     open: (name: string, props?: any) => any;
     push: (name: string, props?: any) => void;
     close: (name: string) => void;
+    closeMultiples: (names: string[]) => void;
     closeLast: () => void;
     isLastScreen: () => boolean;
 
@@ -41,50 +41,56 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
 
     const [isPending, startTransition] = useTransition();
 
-    const delay = 1000
+    const delay = 500
     
-    let lastChild: any = [];
-    
-    Children.forEach(children, (child:any, i) => {
+    const getInitialChildName = useCallback((): any[]=>{
+        let lastChild: any;
 
-        if(i == 0) lastChild = child
-        
-    });
+        Children.forEach(children, (child:any, i) => {
     
-    const [ screens, setScreens ] = useState<string[]>([lastChild.props.name])
-    const [ childrenArray, setChildrenArray ] = useState<any>([lastChild])
+            if(i == 0) lastChild = child
+            
+        });
+        return [lastChild.props.name]
+    },[])
+    
+    const getInitialChild = useCallback((): string[]=>{
+        let lastChild: string = '';
+
+        Children.forEach(children, (child:any, i) => {
+    
+            if(i == 0) lastChild = child
+            
+        });
+        return [lastChild]
+    },[])
+    
+    
+    const [ screens, setScreens ] = useState<string[]>(getInitialChildName)
+    const [ childrenArray, setChildrenArray ] = useState<any>(getInitialChild)
 
 
     const navigate: Navigate = {
-        get: (name: string) => {
+        get: useCallback((name: string) => {
 
             return screens.length > 0 && screens.find(screen=> screen == name) || null 
 
-        },
+        },[screens]),
 
-        getAll: () => {
-
-            console.log('screens', screens)
-            // console.log('children', children)
-            console.log('childrenArray', childrenArray)
-
-        },
-
-        isOpen: (name: string) => {
+        isOpen: useCallback((name: string) => {
 
             return screens.some((screen)=> screen == name)
 
-        },
+        },[screens]),
 
-        isFocused: (name: string) => {
+        isFocused: useCallback((name: string) => {
 
             return (screens[screens.length -1] === name) ? true : false;
 
-        },
+        },[screens]),
         
-
         // cuidado para nao passar nome errado da tela 
-        open: (name: string, props?: any) => {
+        open: useCallback((name: string, props?: any) => {
 
             let newChild: any;
 
@@ -105,9 +111,9 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
             })
 
 
-        },
+        },[]),
 
-        push: (name: string, props?: any) => {
+        push: useCallback((name: string, props?: any) => {
 
             let filteredChild: any = [];
             
@@ -126,10 +132,20 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
 
             })
 
-        },
+        },[]),
 
-        close: (name: string) => {
+        close: useCallback((name: string) => {
 
+            // startTransition(()=> {
+
+            //     setScreens((e)=>[...e.filter((s)=> s !== name)])
+            //     setChildrenArray((e:any)=> {
+    
+            //         return e.filter((s: any)=> s.props.name !== name)
+    
+            //     })
+                
+            // })
 
             setScreens((e)=>[...e.filter((s)=> s !== name)])
             
@@ -143,9 +159,25 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
 
             }, delay)
 
-        },
+        },[]),
 
-        closeLast: () => {
+        closeMultiples: useCallback((names: string[]) => {
+
+            setScreens((e)=>[...e.filter((e)=> !names.includes(e) )])
+            
+            setTimeout(()=>{
+
+                setChildrenArray((e:any)=> {
+
+                    return e.filter((s: any)=> !names.includes(s.props.name))
+
+                })
+
+            }, delay)
+
+        },[]),
+
+        closeLast: useCallback(() => {
 
             setScreens((e)=> e.filter((s,i)=> i !==  (e.length -1)))
 
@@ -159,15 +191,19 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
 
             }, delay)
 
-        },
+        },[]),
 
-        isLastScreen: (): boolean => {
+        isLastScreen: useCallback((): boolean => {
 
             return screens.length == 1;
 
-        }
+        },[screens])
 
     }
+
+
+
+
 
     
     const onBackPress = useCallback(() => {
@@ -191,7 +227,7 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
     
     return (
 
-        <NavigationContext.Provider value={{ navigate, screens }}>
+        <NavigationContext.Provider value={{ navigate }}>
 
 
             {childrenArray}

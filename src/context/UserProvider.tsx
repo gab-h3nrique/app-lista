@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { Item, List } from "../providers/storage/functions/UserStorageFunctions";
 import Storage from "../providers/storage/storage";
 import { Category } from "../providers/storage/functions/CategoryFunctions";
@@ -16,7 +16,7 @@ export const UserContext = createContext({});
 
 export const useUser = () => {
 
-    return useContext(UserContext) as { user: User, setUser: any };
+    return useContext(UserContext) as { user: User, setUser: any, saveUserContext: (user: User) => void };
 
 };
 
@@ -33,13 +33,11 @@ export const UserProvider = ({ children }:any) => {
 
     })
 
-    // function updateUser(user: User) {
+    const saveUserContext = useCallback((user: User) => {
 
-    //     setUser(()=> user)
+        setUser(()=> user)
 
-    //     Storage.List.
-
-    // }
+    },[])
 
     
 
@@ -50,7 +48,7 @@ export const UserProvider = ({ children }:any) => {
 
     return (
 
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, saveUserContext }}>
             {children}
         </UserContext.Provider>
         

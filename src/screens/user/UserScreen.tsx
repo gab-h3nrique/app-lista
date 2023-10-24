@@ -1,5 +1,5 @@
 import { Animated, NativeModules, ScrollView, StatusBar, Text, TouchableWithoutFeedback, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import AnimatedScreen from '../../components/view/AnimatedScreen';
 import Button from '../../components/buttons/Button';
 
@@ -37,4 +37,4 @@ const UserScreen = () => {
   )
 }
 
-export default UserScreen
+export default memo(UserScreen)

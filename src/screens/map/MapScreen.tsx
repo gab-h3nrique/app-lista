@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import tw from '../../libs/tailwind'
 
 import MapView, {Marker, enableLatestRenderer} from 'react-native-maps';
@@ -37,7 +37,7 @@ const MapScreen = () => {
 
 }
 
-export default MapScreen
+export default memo(MapScreen)
 
 const styles = StyleSheet.create({
   container: {

@@ -1,5 +1,5 @@
 import { View, Text, TouchableWithoutFeedback, NativeModules, Animated, Image, FlatList, VirtualizedList, SectionList } from 'react-native'
-import React, { memo, useEffect, useRef, useState } from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import ChevronSvg from '../../../components/svg/icons/ChevronSvg';
 
 import ItemComponent from './components/ItemComponent';
@@ -14,6 +14,7 @@ import Storage from '../../../providers/storage/storage';
 import { useUser } from '../../../context/UserProvider';
 import { useDataStorage } from '../../../context/StorageDataProvider';
 import { useNavigation } from '../../../context/navigation/NavigationProvider';
+import { Item } from '../../../providers/storage/functions/UserStorageFunctions';
 
 const {UIManager} = NativeModules;
 
@@ -28,30 +29,51 @@ interface Props {
 const ItensScreen = (props: any) => {
 
   const { theme } = useTheme()
-  const { user, setUser } = useUser()
   const { dataStorage } = useDataStorage()
 
-  const { navigate, screens } = useNavigation()
+  const { navigate } = useNavigation()
 
-  // const [ itens, setItens ] = useState<Product[]>([])
+  const [ itens, setItens ] = useState<Product[]>([])
 
   // let itens: Product[] = []
-  let itens: Product[] = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
+  // let itens: Product[] = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
 
-  // setTimeout(()=>{
+  const setItensList = useCallback(()=>{
+    setTimeout(()=>{
 
-  //   // itens = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
-  //   setItens(()=>dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e ))
+      setItens(()=>  dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e ))
 
-  // }, 800)
-   
+    }, 800)
+
+  },[])
+
+  const selectItem = useCallback((product: Product) => {
+
+    const item: Item = {
+      id: -1,
+      name: product.name,
+      price: 0,
+      quantity: 0,
+      checked: false,
+      image: product.image || '',
+      productId: product.id || null,
+    }
+
+    navigate.open('QuantityScreen', { item })
+
+  }, [])
+
+  useEffect(()=>{
+    setItensList()
+  },[])
+
   return (
 
     <View style={tw`flex p-3 gap-5 w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
 
       <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-        <Button onPress={()=> navigate.close('ItensScreen')} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+        <Button onPress={navigate.closeLast} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
           <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 
@@ -60,7 +82,7 @@ const ItensScreen = (props: any) => {
       </View>
 
       <FlatList data={itens} style={tw`gap-2 flex-1 w-full h-full`}
-        renderItem={({item}) => <ItemComponent item={item} onPress={() => {}} />}
+        renderItem={({item}) => <ItemComponent item={item} onPress={() => selectItem(item)} />}
         keyExtractor={(item, index) => String(index)}
       />
 
@@ -91,79 +113,6 @@ const ItensScreen = (props: any) => {
       </View>
 
     </View>
-
-    // <View style={tw`flex p-3 gap-5 w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
-
-    //     <View style={tw`items-center justify-center flex flex-row w-full relative`}>
-
-    //     <Button onPress={()=> navigate.close('ItensScreen')} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
-    //       <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
-    //     </Button>
-
-    //       <Text  style={tw`text-slate-500 dark:text-slate-300 text-[2rem] text-center font-bold `}>Itens</Text>
-
-    //     </View>
-
-    //     <FlatList data={itens} style={tw`gap-2 flex-1 w-full h-full`}
-    //     renderItem={({item}) => <ItemComponent item={item} onPress={() => selectItem(item)} />}
-    //     keyExtractor={(item, index) => String(index)}
-    //     />
-
-    //     {/* <View style={tw`gap-4 flex justify-start items-center`}>
-
-    //       {
-    //         itens && itens.length > 0 ? 
-
-    //           itens.map(( item, index: number) =>{
-
-    //             return (
-
-    //               <React.Fragment key={index}>
-    //                 <TouchableWithoutFeedback onPress={() => selectItem(item)}>
-
-    //                   <View style={tw`p-3 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white`}>
-
-    //                     <View style={tw`p-1 flex bg-violet-100 rounded-[.7rem]`}>
-    //                       {
-    //                         item.image ? <Image style={tw`w-8 h-8`} source={{ uri: item.image }} />
-    //                         : <CookieSvg height={32} width={32} fill={'#a78bfa'}/>
-    //                       }
-    //                     </View>
-                
-    //                     <Text style={tw`text-slate-400 text-[1.2rem] font-bold`}>{item.name}</Text>
-                
-    //                     <ChevronSvg height={25} width={25} fill={'#a78bfa'} marginLeft={"auto"}/>
-              
-    //                   </View>
-                      
-    //                 </TouchableWithoutFeedback>
-    //               </React.Fragment>
-                  
-    //             )
-
-    //           })
-
-    //         : null
-
-    //       }
-
-
-    //     </View> */}
-
-    //   </View>
-
-    //   <View style={tw`gap-2 flex items-center bottom-6 right-3 absolute`}>
-
-    //   <Button onPress={() => {navigate.open('CategoryScreen'), navigate.open('itensScreen')}} style={tw`w-8 h-8 rounded-full flex justify-center items-center bg-slate-400 dark:bg-slate-700`}>
-    //     <PenSvg height={13} width={13} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'}/>
-    //   </Button>
-
-    //   <Button onPress={() => {navigate.open('CategoryScreen'), navigate.open('itensScreen')}} style={tw`w-16 h-16 rounded-full flex justify-center items-center bg-violet-400`} >
-    //     <SearchSvg height={30} width={30} fill={theme == 'dark' ? '#334155':'#FFFFFF'}/>
-    //   </Button>
-
-
-    // </View>
 
   )
 }

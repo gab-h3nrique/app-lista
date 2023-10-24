@@ -1,5 +1,5 @@
 import { Animated, NativeModules, StyleSheet, Text, Touchable, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import HouseSvg from '../svg/icons/HouseSvg';
 import ListSvg from '../svg/icons/ListSvg';
 import HeartSvg from '../svg/icons/HeartSvg';
@@ -23,7 +23,7 @@ const Tabs = () => {
 
   const { theme } = useTheme()
 
-  const { screens, navigate } = useNavigation()
+  const { navigate } = useNavigation()
 
   const [ selectedScreen, setSelectedScreen ] = useState('')
 
@@ -76,4 +76,4 @@ const Tabs = () => {
   )
 }
 
-export default Tabs
+export default memo(Tabs)

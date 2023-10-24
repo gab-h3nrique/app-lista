@@ -1,5 +1,5 @@
 import { View, Text, TouchableWithoutFeedback, NativeModules, Animated, Image, StyleSheet, Pressable, FlatList } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import ArrowSvg from '../../../components/svg/icons/ArrowSvg';
 import ShoppingSvg from '../../../components/svg/icons/ShoppingSvg';
 import ChevronSvg from '../../../components/svg/icons/ChevronSvg';
@@ -43,7 +43,6 @@ const CategoryScreen = () => {
 
   }
 
-
   return (
 
     <View style={tw`flex p-3 gap-5 w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
@@ -51,7 +50,7 @@ const CategoryScreen = () => {
 
       <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-        <Button onPress={()=> navigate.close('CategoryScreen')} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+        <Button onPress={()=> navigate.closeLast} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
           <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 
@@ -119,5 +118,5 @@ const CategoryScreen = () => {
   )
 }
 
-export default CategoryScreen
+export default memo(CategoryScreen)
 

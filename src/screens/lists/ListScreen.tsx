@@ -55,7 +55,7 @@ const ListScreen = () => {
 
 
   return (
-    
+
     <View style={tw`flex justify-start items-center w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
 
       <View style={tw`p-2 mt-2`}>

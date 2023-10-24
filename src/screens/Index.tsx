@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import Layout from '../components/Layout'
-import HomeScreen from './home/HomeScreen'
 import ListScreen from './lists/ListScreen'
 import Tabs from '../components/navigation/Tabs'
 import { Navigation } from '../context/navigation/NavigationProvider'
@@ -10,6 +9,8 @@ import MapScreen from './map/MapScreen'
 import EditListScreen from './list/EditListScreen'
 import CategoryScreen from './list/category/CategoryScreen'
 import ItensScreen from './list/itens/ItensScreen'
+import QuantityScreen from './list/quantity/QuantityScreen'
+import HomeScreen from './home/HomeScreen'
 
 const Index = () => {
 
@@ -32,6 +33,8 @@ const Index = () => {
                 <Navigation.Stack key={5} name='CategoryScreen' component={CategoryScreen} options={{style: {zIndex: 1} }}/>
 
                 <Navigation.Stack key={6} name='ItensScreen' component={ItensScreen} options={{style: {zIndex: 1} }}/>
+
+                <Navigation.Stack key={7} name='QuantityScreen' component={QuantityScreen} options={{style: {zIndex: 1} }}/>
 
             </Navigation.Context>
 
