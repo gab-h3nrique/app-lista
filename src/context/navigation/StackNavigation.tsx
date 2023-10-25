@@ -51,14 +51,24 @@ const StackNavigation = memo(function StackNavigation({ name, component: Compone
         
     },[])
 
-    // start not focused animation
-    if(!navigate.isFocused(name)) lostFocus();
+    // // start not focused animation
+    // if(!navigate.isFocused(name)) lostFocus();
 
-    // start open animation
-    if(navigate.isFocused(name)) openAnimate();
+    // // start open animation
+    // if(navigate.isFocused(name)) openAnimate();
 
-    // start close animation
-    if(!navigate.isOpen(name)) closeAnimate();
+    
+    useEffect(()=>{
+
+        // start open animation
+        if(navigate.isOpen(name)) openAnimate();
+        
+        
+        // start close animation
+        if(!navigate.isOpen(name)) closeAnimate();
+
+    },[navigate.get(name)])
+
 
     return (
 

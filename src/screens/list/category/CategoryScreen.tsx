@@ -25,23 +25,18 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 const CategoryScreen = () => {
 
   const { theme } = useTheme()
-  const { user, setUser } = useUser()
+  // const { user, setUser } = useUser()
   const { dataStorage } = useDataStorage()
 
   const { navigate, screens } = useNavigation()
 
   function selectCategory(category: Category) {
 
-    setUser((e: User)=>{
-      return {
-        ...e,
-        selectedCategory: category
-      }
-    })
-
     navigate.open('ItensScreen', { category })
 
   }
+
+  console.log('---------------------------CategoryScreen')
 
   return (
 
@@ -50,7 +45,7 @@ const CategoryScreen = () => {
 
       <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-        <Button onPress={()=> navigate.closeLast} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+        <Button onPress={navigate.closeLast} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
           <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 

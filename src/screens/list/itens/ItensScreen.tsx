@@ -35,9 +35,6 @@ const ItensScreen = (props: any) => {
 
   const [ itens, setItens ] = useState<Product[]>([])
 
-  // let itens: Product[] = []
-  // let itens: Product[] = dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e );
-
   const setItensList = useCallback(()=>{
     setTimeout(()=>{
 

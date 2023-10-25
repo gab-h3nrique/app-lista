@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "react-devtools": "react-devtools"
+    "devtools": "react-devtools"
   },
   "dependencies": {
     "react": "18.2.0",

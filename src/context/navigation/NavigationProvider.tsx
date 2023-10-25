@@ -37,11 +37,11 @@ interface Props {
 
 const NavigationContext = createContext({});
 
-const NavigationProvider = ({ tab: Tab ,children }: Props) => {
+const NavigationProvider = ({ tab: Tab, children }: Props) => {
 
     const [isPending, startTransition] = useTransition();
 
-    const delay = 500
+    const delay = 600
     
     const getInitialChildName = useCallback((): any[]=>{
         let lastChild: any;
@@ -66,8 +66,8 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
     },[])
     
     
-    const [ screens, setScreens ] = useState<string[]>(getInitialChildName)
-    const [ childrenArray, setChildrenArray ] = useState<any>(getInitialChild)
+    const [ screens, setScreens ] = useState<string[]>(()=> getInitialChildName())
+    const [ childrenArray, setChildrenArray ] = useState<any>(()=> getInitialChild())
 
 
     const navigate: Navigate = {
@@ -96,16 +96,19 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
 
             Children.forEach(children, (child:any, index) => {
 
+                // if(child.props.name == name) newChild = {...child, props: {...child.props, data: props}};
                 if(child.props.name == name) newChild = {...child, props: {...child.props, data: props}};
 
             });
 
             if(!newChild) return console.error(`Não existe nenhum componente com este nome: ${name}\n Verifique se o nome passado para <Navigation.Stack nome={'nomeExemplo'} esteja correto com o nome passado no navigate.open('nomeExemplo)`)
+            
             startTransition(()=> {
 
                 setChildrenArray((e:any)=> {
                     return [...e.filter((s: any)=> s.props.name !== name), newChild]
                 })
+
                 setScreens((sc)=> [...sc.filter(s=> s != name), name])
 
             })
@@ -135,17 +138,6 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
         },[]),
 
         close: useCallback((name: string) => {
-
-            // startTransition(()=> {
-
-            //     setScreens((e)=>[...e.filter((s)=> s !== name)])
-            //     setChildrenArray((e:any)=> {
-    
-            //         return e.filter((s: any)=> s.props.name !== name)
-    
-            //     })
-                
-            // })
 
             setScreens((e)=>[...e.filter((s)=> s !== name)])
             
@@ -202,29 +194,32 @@ const NavigationProvider = ({ tab: Tab ,children }: Props) => {
     }
 
 
-
-
-
     
-    const onBackPress = useCallback(() => {
+    // const onBackPress = useCallback(() => {
+
+    //     if(navigate.isLastScreen()) BackHandler.exitApp()
+    //     else navigate.closeLast()
+
+    //     return true;
+    
+    // },[navigate, screens]);
+
+    const onBackPress = () => {
 
         if(navigate.isLastScreen()) BackHandler.exitApp()
         else navigate.closeLast()
 
         return true;
     
-    },[navigate, screens]);
+    }
     
-    BackHandler.addEventListener('hardwareBackPress', onBackPress);
     
     useEffect(()=> {
+        
+        BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
+    }, [childrenArray])
 
-    }, [])
-
-    // console.log('------------------------------')
-    // console.log('--------------------- renderizou navigate')
-    
     return (
 
         <NavigationContext.Provider value={{ navigate }}>
