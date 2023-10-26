@@ -1,6 +1,6 @@
 
 
-import { View, Text, StyleSheet, Animated, Dimensions, NativeModules } from 'react-native'
+import { View, Text, StyleSheet, Animated, Dimensions, NativeModules, PanResponder } from 'react-native'
 import React, { Children, ElementType, ReactNode, createContext, memo, useCallback, useContext, useMemo, useRef, useState, useTransition } from 'react'
 import tw from 'twrnc';
 
@@ -55,6 +55,44 @@ const Navigator = ({ children }: Props) => {
 
     const positionScreen = useRef(new Animated.Value(0)).current;
 
+    // const panResponder = React.useRef(
+    //     PanResponder.create({
+    //         onMoveShouldSetPanResponder: (evt, gestureState) => {
+
+    //             const isFirstScreen = config.stacks.length === 1
+    //             const isFarLeft = evt.nativeEvent.pageX < Math.floor(width * 0.25);
+            
+    //             if(!isFirstScreen && isFarLeft)  return true;
+
+    //             return false;
+
+    //         },
+
+    //         onPanResponderMove: (evt, gestureState) => positionScreen.setValue(gestureState.moveX),
+
+    //         onPanResponderTerminationRequest: (evt, gestureState) => true,
+            
+    //         onPanResponderRelease: (evt, gestureState) => {
+    //             if (Math.floor(gestureState.moveX) >= width / 2) {
+    //                 pop();
+    //             } else {
+    //                 Animated.timing(positionScreen, {
+    //                 toValue: 0,
+    //                 duration: 250,
+    //                 useNativeDriver: true,
+    //                 }).start();
+    //             }
+    //         },
+    //         onPanResponderTerminate: (evt, gestureState) => {
+    //             Animated.timing(positionScreen, {
+    //                 toValue: 0,
+    //                 duration: 250,
+    //                 useNativeDriver: true,
+    //             }).start();
+    //         },
+    //     }),
+    // ).current;
+
     const push = useCallback((name: string, props?: {}) => {
 
         (async()=>{
@@ -108,27 +146,28 @@ const Navigator = ({ children }: Props) => {
     return (
 
         <NavigationContext.Provider value={contextValue}>
+            {/* <View style={tw`w-full h-full relative flex`} {...panResponder.panHandlers}> */}
+                {config.stacks.map((stack, index)=>{
 
-            {config.stacks.map((stack, index)=>{
+                    const Component = stack.component;
 
-                const Component = stack.component;
+                    // console.log('data', stack.props)
 
-                // console.log('data', stack.props)
+                    let translateX: any = 0;
 
-                let translateX: any = 0;
-
-                if(index === (config.stacks.length -1) && index > 0) translateX = positionScreen
+                    if(index === (config.stacks.length -1) && index > 0) translateX = positionScreen
 
 
 
-                return (
+                    return (
 
-                    <Animated.View key={stack.name} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }]}>
-                        <Component key={index} {...stack.props}/>
-                    </Animated.View>
+                        <Animated.View key={stack.name} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }]}>
+                            <Component key={index} {...stack.props}/>
+                        </Animated.View>
 
-                )
-            })}
+                    )
+                })}
+            {/* </View> */}
 
         </NavigationContext.Provider>
 
