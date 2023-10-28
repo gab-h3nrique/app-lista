@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment, memo, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Platform, StatusBar } from 'react-native'
 // import tw from 'twrnc';
 
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
      }
 })
 
-export default Layout
+export default memo(Layout)

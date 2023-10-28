@@ -1,5 +1,5 @@
 import { FlatList, ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native'
-import React, { memo, useEffect, useRef, useState } from 'react'
+import React, { memo, useContext, useEffect, useRef, useState } from 'react'
 import ShoppingSvg from '../../components/svg/icons/ShoppingSvg';
 import PlusSvg from '../../components/svg/icons/PlusSvg';
 import Button from '../../components/buttons/Button';
@@ -12,6 +12,7 @@ import { User, useUser } from '../../context/UserProvider';
 import { useNavigation } from '../../../Navigator';
 import useDataStorage from '../../hooks/useDataStorage';
 import useList from '../../hooks/useList';
+import { ListContext } from '../../context/ListProvider';
 // import { useNavigation } from '../../context/navigation/NavigationProvider';
 
 const ListScreen = () => {
@@ -20,6 +21,7 @@ const ListScreen = () => {
   const navigator = useNavigation()
 
   const { list, saveList, saveSelectedList } = useList()
+  // const { list, saveList } = useContext(ListContext)
 
   function createNewList() {
 

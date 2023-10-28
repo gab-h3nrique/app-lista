@@ -1,5 +1,5 @@
-import { View, Text, TouchableWithoutFeedback, TextInput, Image, BackHandler, NativeModules, Animated, Pressable, FlatList } from 'react-native'
-import React, { memo, useEffect, useRef, useState } from 'react'
+import { View, Text, TextInput, Image, NativeModules, FlatList } from 'react-native'
+import React, { memo } from 'react'
 import PlusSvg from '../../components/svg/icons/PlusSvg';
 import ChevronSvg from '../../components/svg/icons/ChevronSvg';
 import Button from '../../components/buttons/Button';
@@ -7,13 +7,9 @@ import tw from '../../libs/tailwind';
 import { useTheme } from '../../context/ThemeProvider';
 import ItemListComponent from './ItemListComponent';
 import PenSvg from '../../components/svg/icons/PenSvg';
-import { Category } from '../../providers/storage/functions/CategoryFunctions';
 import { Item, List } from '../../providers/storage/functions/UserStorageFunctions';
-import { Product } from '../../providers/storage/functions/ProductFunctions';
 import Storage from '../../providers/storage/storage';
-import { User, useUser } from '../../context/UserProvider';
 import { useNavigation } from '../../../Navigator';
-import useDataStorage from '../../hooks/useDataStorage';
 import useList from '../../hooks/useList';
 
 const { UIManager } = NativeModules;

@@ -257,7 +257,7 @@ interface StackProps {
 
 export const Stack = memo((props: StackProps) => null);
 
-export default Navigator
+export default memo(Navigator)
 
 export const useNavigation = () => useContext(NavigationContext) as ContextValue;
 

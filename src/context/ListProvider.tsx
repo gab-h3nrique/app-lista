@@ -2,7 +2,6 @@ import { ReactNode, createContext, useCallback, useContext, useMemo, useState } 
 import Storage from "../providers/storage/storage";
 import { List } from "../providers/storage/functions/UserStorageFunctions";
 
-
 interface Props {
 
     children: ReactNode
@@ -25,29 +24,9 @@ export default function ListProvider({ children }: Props) {
   const [ list, setList ] = useState(Storage.List.getMany());
   const [ selectedList, setSelectedList ] = useState<List | null>(null);
 
+  const saveList = useCallback((list: List[]) => setList(()=> list), []);
 
-  const saveList = useCallback((list: List[]) => {
-
-    setList(()=> list)
-
-  }, []);
-
-  const deleteList = useCallback((id: number) => {
-
-    const isRemoved = Storage.List.delete(id)
-
-    if(!isRemoved) return console.error('list was not removed')
-
-    setList(prev=> prev.filter(e=> e.id !== id))
-
-  }, []);
-
-
-  const saveSelectedList = useCallback((list: List) => {
-
-    setSelectedList(()=> list)
-
-  }, []);
+  const saveSelectedList = useCallback((list: List) =>  setSelectedList(()=> list), []);
 
   const contextValue = useMemo(() => ({
 
@@ -56,17 +35,15 @@ export default function ListProvider({ children }: Props) {
     selectedList,
     saveSelectedList
 
-  }), [list, saveList, selectedList, saveSelectedList]);
-
+  }), [list, selectedList]);
 
   return (
 
     <ListContext.Provider value={contextValue}>
-        {children}
+      {children}
     </ListContext.Provider>
 
   )
 }
 
 
-export const useList = () => useContext(ListContext)
