@@ -1,7 +1,7 @@
 
 
-import { View, Text, StyleSheet, Animated, Dimensions, NativeModules, PanResponder } from 'react-native'
-import React, { Children, ElementType, ReactNode, createContext, memo, useCallback, useContext, useMemo, useRef, useState, useTransition } from 'react'
+import { View, Text, StyleSheet, Animated, Dimensions, NativeModules, PanResponder, StyleProp, TextStyle, BackHandler } from 'react-native'
+import React, { Children, ElementType, ReactNode, createContext, memo, useCallback, useContext, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import tw from 'twrnc';
 
 // const { UIManager } = NativeModules;
@@ -13,6 +13,7 @@ const { width } = Dimensions.get('window');
 interface Props {
 
     children: ReactNode[]
+    tab?: ElementType;
 
 }
 
@@ -21,6 +22,9 @@ interface ChildrenType {
     name: string;
     component: ElementType;
     props?: {}
+    options?: {
+        style?: StyleProp<TextStyle> | undefined;
+    };
 
 }
 
@@ -31,23 +35,32 @@ interface Config {
 
 }
 
+interface ContextValue {
+    open: (name: string, props?: any)=> void,
+    change: (name: string, props?: any)=> void,
+    close: (name: string | string[])=> void,
+    pop: ()=> void,
+}
+
 const formatElement = (children: ReactNode[]) => {
 
     const elements: ChildrenType[] = [];
 
     Children.forEach(children, (child: any) =>{
 
-        elements.push({ name: child.props.name, component: child.props.component })
+        elements.push({ ...child.props })
 
     })
-  
+
     return elements;
 
 };
 
 export const NavigationContext = createContext({});
 
-const Navigator = ({ children }: Props) => {
+const Navigator = ({ tab: Tab, children }: Props) => {
+
+    const [isPending, startTransition] = useTransition()
 
     const rootElements = useMemo(() => formatElement(children) ,[children])
 
@@ -93,11 +106,11 @@ const Navigator = ({ children }: Props) => {
     //     }),
     // ).current;
 
-    const push = useCallback((name: string, props?: {}) => {
+    const open = useCallback((name: string, props?: {}) => {
 
         (async()=>{
-    
-            setConfig((prev) => {
+
+            setConfig(prev => {
 
                 const foundElement = prev.rootElements.find((e: ChildrenType) => e.name === name);
 
@@ -112,6 +125,48 @@ const Navigator = ({ children }: Props) => {
             Animated.timing(positionScreen, { toValue: 0, duration: 250, useNativeDriver: true }).start();
 
         })
+
+    },[])
+
+    const change = useCallback((name: string, props?: {}) => {
+
+        // (async()=>{
+    
+            setConfig(prev => {
+
+                const foundElement = prev.rootElements.find((e: ChildrenType) => e.name === name);
+
+                if(foundElement) return { ...prev, stacks: [{...foundElement, props}] };
+                else return prev;
+
+            });
+            
+        // })().then(()=>{
+
+        //     positionScreen.setValue(width);
+        //     Animated.timing(positionScreen, { toValue: 0, duration: 250, useNativeDriver: true }).start();
+
+        // })
+
+    },[])
+
+    const close = useCallback((name: string | string[]) => {
+
+        Animated.timing(positionScreen, {
+            toValue: width,
+            duration: 250,
+            useNativeDriver: true,
+        }).start(() => {
+  
+            positionScreen.setValue(0);
+            setConfig(prev => {
+
+                if(prev.stacks.length > 1) return { ...prev, stacks: prev.stacks.filter((e)=> !name.includes(e.name)) };
+                else return prev;
+                
+            });
+  
+        });
 
     },[])
 
@@ -135,13 +190,27 @@ const Navigator = ({ children }: Props) => {
 
     },[])
 
-    const contextValue = useMemo(() => ({
-        pop,
-        push
-    }), []);
+    
 
+    const contextValue: ContextValue = useMemo(() => ({ open, change, close, pop, }), []);
 
-    // console.log('-----------------------------------------------------renderizando Navigator')
+    const onBackPress = () => {
+
+        if(config.stacks.length > 1) pop();
+        else BackHandler.exitApp();
+
+        return true;
+    
+    }
+    
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    
+    useEffect(()=> {
+        
+
+    }, [])
+
+    // console.log('--------------------------------renderizando Navigator------------------------------------------')
 
     return (
 
@@ -149,25 +218,25 @@ const Navigator = ({ children }: Props) => {
             {/* <View style={tw`w-full h-full relative flex`} {...panResponder.panHandlers}> */}
                 {config.stacks.map((stack, index)=>{
 
-                    const Component = stack.component;
+                    const style = stack.options?.style
 
-                    // console.log('data', stack.props)
+                    const Component = stack.component;
 
                     let translateX: any = 0;
 
                     if(index === (config.stacks.length -1) && index > 0) translateX = positionScreen
 
-
-
                     return (
 
-                        <Animated.View key={stack.name} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }]}>
+                        <Animated.View key={stack.name} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }, style]}>
                             <Component key={index} {...stack.props}/>
                         </Animated.View>
 
                     )
                 })}
             {/* </View> */}
+
+            {Tab && <Tab/>}
 
         </NavigationContext.Provider>
 
@@ -176,11 +245,21 @@ const Navigator = ({ children }: Props) => {
 
 }
 
-export const Stack = memo((props: ChildrenType) => null);
+interface StackProps {
+
+    name: string;
+    component: ElementType;
+    options?: {
+        style?: StyleProp<TextStyle> | undefined;
+    };
+
+}
+
+export const Stack = memo((props: StackProps) => null);
 
 export default Navigator
 
-export const useNavigation:any = () => useContext(NavigationContext);
+export const useNavigation = () => useContext(NavigationContext) as ContextValue;
 
 
 

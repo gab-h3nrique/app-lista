@@ -9,9 +9,11 @@ import tw from '../../../libs/tailwind';
 import { useTheme } from '../../../context/ThemeProvider';
 import Button from '../../../components/buttons/Button';
 import { Item } from '../../../providers/storage/functions/UserStorageFunctions';
-import { useNavigation } from '../../../context/navigation/NavigationProvider';
 import { User, useUser } from '../../../context/UserProvider';
 import Storage from '../../../providers/storage/storage';
+import { useNavigation } from '../../../../Navigator';
+import useDataStorage from '../../../hooks/useDataStorage';
+import useList from '../../../hooks/useList';
 
 
 const { UIManager } = NativeModules;
@@ -26,15 +28,13 @@ interface Props {
 }
 
 
-
-
-
 const QuantityScreen = ({ item }: Props) => {
 
   const { theme } = useTheme()
-  const { user, saveUserContext } = useUser()
 
-  const { navigate } = useNavigation()
+  const { selectedList, saveSelectedList, saveList } = useList()
+
+  const navigator = useNavigation()
 
   const [ quantity, setQuantity ] = useState(item?.quantity || 0)
 
@@ -52,20 +52,24 @@ const QuantityScreen = ({ item }: Props) => {
 
   const addItemToList = () => {
 
-    if(!user.selectedList) return console.warn('this list is null')
+    if(!selectedList) return console.warn('this list is null')
 
-    const newItem = Storage.Item.create({...item, quantity: quantity, listId: user.selectedList.id})
+    const newItem = Storage.Item.create({...item, quantity: quantity, listId: selectedList.id})
 
     if(!newItem) return console.warn('error creating item')
 
     let newItemArray: Item[] = []
 
-    if(user.selectedList.itens) newItemArray = [newItem, ...user.selectedList.itens]
+    if(selectedList.itens) newItemArray = [newItem, ...selectedList.itens]
     else newItemArray = [newItem]
 
-    saveUserContext({ ...user, selectedList: {...user.selectedList, itens: newItemArray} })
+    saveSelectedList({ ...selectedList, itens: newItemArray })
 
-    navigate.closeMultiples(['QuantityScreen', 'ItensScreen', 'CategoryScreen'])
+    saveList(Storage.List.getMany())
+
+    navigator.close('ProductsScreen')
+    navigator.close('CategoryScreen')
+    navigator.close('QuantityScreen')
 
   }
 
@@ -76,7 +80,7 @@ const QuantityScreen = ({ item }: Props) => {
 
       <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-        <Button onPress={navigate.closeLast} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+        <Button onPress={navigator.pop} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
           <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 

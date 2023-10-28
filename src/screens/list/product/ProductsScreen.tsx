@@ -10,11 +10,9 @@ import { useTheme } from '../../../context/ThemeProvider';
 import tw from '../../../libs/tailwind';
 import { Category } from '../../../providers/storage/functions/CategoryFunctions';
 import { Product } from '../../../providers/storage/functions/ProductFunctions';
-import Storage from '../../../providers/storage/storage';
-import { useUser } from '../../../context/UserProvider';
-import { useDataStorage } from '../../../context/StorageDataProvider';
-import { useNavigation } from '../../../context/navigation/NavigationProvider';
 import { Item } from '../../../providers/storage/functions/UserStorageFunctions';
+import { useNavigation } from '../../../../Navigator';
+import useDataStorage from '../../../hooks/useDataStorage';
 
 const {UIManager} = NativeModules;
 
@@ -26,21 +24,29 @@ interface Props {
 
 }
 
-const ItensScreen = (props: any) => {
+const ProductsScreen = (props: any) => {
+
+  const [isPending, startTransition] = useTransition()
 
   const { theme } = useTheme()
-  const { dataStorage } = useDataStorage()
 
-  const { navigate } = useNavigation()
+  const { product } = useDataStorage()
+
+  const navigator = useNavigation()
+  
 
   const [ itens, setItens ] = useState<Product[]>([])
 
   const setItensList = useCallback(()=>{
     setTimeout(()=>{
 
-      setItens(()=>  dataStorage.product.filter((e)=> props.category ? e.categoryId === props.category.id : e ))
+      startTransition(()=>{
+        setItens(()=>  product.filter((e)=> props.category ? e.categoryId === props.category.id : e ))
 
-    }, 800)
+      })
+
+
+    }, 150)
 
   },[])
 
@@ -56,7 +62,7 @@ const ItensScreen = (props: any) => {
       productId: product.id || null,
     }
 
-    navigate.open('QuantityScreen', { item })
+    navigator.open('QuantityScreen', { item })
 
   }, [])
 
@@ -70,7 +76,7 @@ const ItensScreen = (props: any) => {
 
       <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-        <Button onPress={navigate.closeLast} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+        <Button onPress={navigator.pop} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
           <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 
@@ -114,5 +120,5 @@ const ItensScreen = (props: any) => {
   )
 }
 
-export default memo(ItensScreen)
+export default memo(ProductsScreen)
 

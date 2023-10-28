@@ -2,17 +2,19 @@ import { View, Text } from 'react-native'
 import React, { memo, useEffect } from 'react'
 import tw from '../../libs/tailwind';
 import { useNavigation } from '../../context/navigation/NavigationProvider';
+import { useTheme } from '../../context/ThemeProvider';
 
 const HomeScreen = () => {
+
+  const { theme } = useTheme()
   
   const { navigate } = useNavigation()
 
 
 
   useEffect(()=>{
-    
 
-  },[])
+  },[theme])
 
   return (
 

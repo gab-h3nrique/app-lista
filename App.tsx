@@ -1,40 +1,55 @@
 
 import { ThemeProvider } from './src/context/ThemeProvider';
-import { StorageDataProvider } from './src/context/StorageDataProvider';
 import { UserProvider } from './src/context/UserProvider';
 import Index from './src/screens/Index';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import Navigator, { NavigationContext, Stack, useNavigation } from './Navigator';
-import { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Layout from './src/components/Layout';
+import Navigator, { Stack } from './Navigator';
+import ListScreen from './src/screens/lists/ListScreen';
+import UserScreen from './src/screens/user/UserScreen';
+import EditListScreen from './src/screens/list/EditListScreen';
+import Tabs from './src/components/navigation/Tabs';
+import HomeScreen from './src/screens/home/HomeScreen';
+import MapScreen from './src/screens/map/MapScreen';
+import CategoryScreen from './src/screens/list/category/CategoryScreen';
+import ProductsScreen from './src/screens/list/product/ProductsScreen';
+import QuantityScreen from './src/screens/list/quantity/QuantityScreen';
+import { DataStorageProvider } from './src/context/StorageDataProvider';
+import ListProvider from './src/context/ListProvider';
+import EditItemScreen from './src/screens/list/editItem/EditItemScreen';
 
 function App(): JSX.Element {
   
   return (
     
-    // <ThemeProvider>
-    //   <StorageDataProvider>
-    //     <UserProvider>
-
-            
-    //       <Index/>
-
-
-    //     </UserProvider>
-    //   </StorageDataProvider>
-    // </ThemeProvider>
-
     <ThemeProvider>
-      <Layout>
+      <DataStorageProvider>
+        <UserProvider>
+          <ListProvider>
 
-        <Navigator>
-          <Stack name="Screen1" component={Screen1} />
-          <Stack name="Screen2" component={Screen2} />
-          <Stack name="Screen3" component={Screen3} />
-          <Stack name="Screen4" component={Screen4} />
-        </Navigator>
 
-      </Layout>
+            <Layout>
+
+              <Navigator tab={Tabs}>
+  
+                <Stack name="HomeScreen" component={HomeScreen} />
+                <Stack name="ListScreen" component={ListScreen} />
+                <Stack name="MapScreen" component={MapScreen} />
+                <Stack name="UserScreen" component={UserScreen} />
+
+                <Stack name="EditListScreen" component={EditListScreen} options={{style: {zIndex: 1} }}/>
+                <Stack name="CategoryScreen" component={CategoryScreen} options={{style: {zIndex: 1} }}/>
+                <Stack name="ProductsScreen" component={ProductsScreen} options={{style: {zIndex: 1} }}/>
+                <Stack name="QuantityScreen" component={QuantityScreen} options={{style: {zIndex: 1} }}/>
+                <Stack name="EditItemScreen" component={EditItemScreen} options={{style: {zIndex: 1} }}/>
+
+              </Navigator>
+
+            </Layout>
+
+
+          </ListProvider>
+        </UserProvider>
+      </DataStorageProvider>
     </ThemeProvider>
 
   );
@@ -43,70 +58,3 @@ function App(): JSX.Element {
 
 
 export default App;
-
-const Screen1 = memo(() => {
-
-  const navigator = useNavigation()
-
-  console.log('--------------------Screen1')
-
-  return (
-
-    <View style={[styles.screen, { backgroundColor: 'blue' }]}>
-      <Text>screen 1</Text>
-      <Button title="abrir proxima tela" onPress={() => navigator.push('Screen2')} />
-      <Button title="fechar" onPress={() => navigator.pop()} />
-    </View>
-
-  )
-})
-
-const Screen2 = memo(() => {
-  
-  const navigator = useNavigation()
-  console.log('renderizando--------------------Screen2')
-  
-  return (
-    <View style={[styles.screen, { backgroundColor: 'green' }]}>
-      <Text>screen 2</Text>
-      <Button title="abrir proxima tela" onPress={() => navigator.push('Screen3')} />
-      <Button title="fechar" onPress={() => navigator.pop()} />
-    </View>
-)})
-
-const Screen3 = memo((props) => {
-  
-  const navigator = useNavigation()
-  console.log('renderizando--------------------Screen3', props)
-  
-  return (
-    <View style={[styles.screen, { backgroundColor: 'yellow' }]}>
-      <Text>screen 3</Text>
-      <Button title="abrir proxima tela" onPress={() => navigator.push('Screen4', { item: 'a'})} />
-      <Button title="fechar" onPress={() => navigator.pop()} />
-    </View>
-)})
-
-const Screen4 = memo((props) =>{ 
-  
-
-  const navigator = useNavigation()
-
-  console.log('renderizando--------------------Screen4', props)
-  
-  return (
-    <View style={[styles.screen, { backgroundColor: 'red' }]}>
-      <Text>screen 4</Text>
-      <Button title="fechar" onPress={() => navigator.pop()} />
-    </View>
-)})
-
-// export default Screen1;
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

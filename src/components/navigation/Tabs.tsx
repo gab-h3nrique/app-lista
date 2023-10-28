@@ -8,7 +8,7 @@ import Button from '../buttons/Button';
 import { useTheme } from '../../context/ThemeProvider';
 import tw from '../../libs/tailwind';
 import LocationDotSvg from '../svg/icons/LocationDotSvg';
-import { useNavigation } from '../../context/navigation/NavigationProvider';
+import { useNavigation } from '../../../Navigator';
 
 const {UIManager} = NativeModules;
 
@@ -23,7 +23,7 @@ const Tabs = () => {
 
   const { theme } = useTheme()
 
-  const { navigate } = useNavigation()
+  const navigator = useNavigation()
 
   const [ selectedScreen, setSelectedScreen ] = useState('')
 
@@ -31,7 +31,7 @@ const Tabs = () => {
 
     if(!screen) return console.warn('no screen was selected in tabs');
 
-    navigate.push(screen)
+    navigator.change(screen)
 
     setSelectedScreen(screen)
 
@@ -52,8 +52,6 @@ const Tabs = () => {
   return (
 
     <View style={[tw`py-3 px-6 rounded-t-[35px] bottom-0 absolute flex flex-row justify-between items-center w-full bg-white dark:bg-slate-700`, {zIndex: 0}]}>
-
-
 
       <Button onPress={()=> switchTo('HomeScreen')}>
         <HouseSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'HomeScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'HomeScreen' ? '#A78BFA' : '#D1D5DB') }/>

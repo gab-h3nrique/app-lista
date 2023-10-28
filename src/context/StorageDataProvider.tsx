@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { List } from "../providers/storage/functions/UserStorageFunctions";
 import { Category } from "../providers/storage/functions/CategoryFunctions";
 import { Brand } from "../providers/storage/functions/BrandFunctions";
@@ -7,56 +7,61 @@ import Storage from "../providers/storage/storage";
 
 export interface DataStorage {
 
+    selectedList: List | null,
+    list: List[],
     category: Category[],
     brand: Brand[],
     product: Product[],
 
 }
 
-export const DataStorage = createContext({});
+export interface DataStorageProvider {
 
-export const useDataStorage = () => {
+    dataStorage: DataStorage,
+    setSelectedStorageList: (list: List)=> void
+    setStorageList: (list: List[])=> void
 
-    return useContext(DataStorage) as { dataStorage: DataStorage, setDataStorage: any };
+}
 
-};
+export const DataStorageContext = createContext({});
 
-export const StorageDataProvider = ({ children }:any) => {
+export const DataStorageProvider = ({ children }:any) => {
 
     const [ dataStorage, setDataStorage ] = useState<DataStorage>({
 
+        selectedList: null,
+        list: Storage.List.getMany(),
         category: Storage.Category.getMany(),
         brand: Storage.Brand.getMany(),
         product: Storage.Product.getMany(),
 
     })
 
-    // setDataStorage(()=>{
-    //     return {
-    //         category: Storage.Category.getMany(),
-    //         brand: Storage.Brand.getMany(),
-    //         product: Storage.Product.getMany(),
-    //     }
-    // })
+    const setSelectedStorageList = useCallback((selectedList: List)=>{
+
+        setDataStorage(prev=>({ ...prev, selectedList: selectedList }))
+
+    }, [])
+
+    const setStorageList = useCallback((list: List[])=>{
+
+        setDataStorage(prev=>({ ...prev, list: list }))
+        
+    }, [])
 
 
-    // const [ category, setCategory ] = useState<Category[]>()
-    // const [ brand, setBrand ] = useState<Brand[]>()
-    // const [ product, setProduct ] = useState<Product[]>()
-    
+    const contextValue: DataStorageProvider = useMemo(() => (
 
-    useEffect(()=>{
+        { dataStorage, setSelectedStorageList, setStorageList }
 
-
-    },[dataStorage])
-
+    ), []);
 
 
     return (
 
-        <DataStorage.Provider value={{ dataStorage, setDataStorage }}>
+        <DataStorageContext.Provider value={{ dataStorage, setSelectedStorageList, setStorageList }}>
             {children}
-        </DataStorage.Provider>
+        </DataStorageContext.Provider>
         
     )
 

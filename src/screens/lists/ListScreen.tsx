@@ -9,50 +9,50 @@ import ListItemComponent from './components/ListItemComponent';
 import { List } from '../../providers/storage/functions/UserStorageFunctions';
 import Storage from '../../providers/storage/storage';
 import { User, useUser } from '../../context/UserProvider';
-import { useNavigation } from '../../context/navigation/NavigationProvider';
+import { useNavigation } from '../../../Navigator';
+import useDataStorage from '../../hooks/useDataStorage';
+import useList from '../../hooks/useList';
+// import { useNavigation } from '../../context/navigation/NavigationProvider';
 
 const ListScreen = () => {
   
   const { theme } = useTheme()
-  const { user, setUser } = useUser()
-  const { navigate } = useNavigation()
+  const navigator = useNavigation()
 
+  const { list, saveList, saveSelectedList } = useList()
 
   function createNewList() {
 
     const newList = Storage.List.create({name: `Nova lista`, checked: false})
 
-    if(!newList) return console.warn('list was not created')
+    if(!newList) return console.error('list was not created')
 
-    setUser((u: User)=>{
-      return {...u, lists: [newList, ...u.lists], selectedList: newList}
-    })
-
-    navigate.open('EditListScreen')
+    navigator.open('EditListScreen')
+    
+    saveList(Storage.List.getMany())
 
   }
 
-  function saveSelectedList(list: List) {
+  // function saveSelectedList(list: List) {
 
-    // setSelectedList(()=> list)
-    // setListState((e)=> e.map((e)=> e.id === list.id ? list : e))
+  //   // setSelectedList(()=> list)
+  //   // setListState((e)=> e.map((e)=> e.id === list.id ? list : e))
 
-    setUser((u: User)=>{
-      return {...u, selectedList: list}
-    })
+  //   setUser((u: User)=>{
+  //     return {...u, selectedList: list}
+  //   })
 
-  }
+  // }
 
   async function openPressedList(list: List) {
 
-    setUser((u: User)=>{
-      return {...u, selectedList: list}
-    })
+    saveSelectedList(list)
 
-    navigate.open('EditListScreen', { selectedList: list })
+    navigator.open('EditListScreen')
 
   }
 
+  console.log('------------------------------renderizando ListScreen')
 
   return (
 
@@ -93,7 +93,7 @@ const ListScreen = () => {
         <View style={tw`mb-[3.5rem] p-4 gap-3 flex justify-start items-center w-full h-full`}>
 
           {
-            user.lists.length > 0 ? user.lists.map((e: List, i) => 
+            list && list.length > 0 ? list.map((e: List, i) => 
               <React.Fragment key={i}>
                 <ListItemComponent item={e} onPress={() => openPressedList(e)} /> 
               </React.Fragment>

@@ -16,18 +16,6 @@ const Layout = (props :Props) => {
 
     const { theme, setAppTheme } = useTheme()
 
-    function setTheme() {
-  
-      setAppTheme(Storage.storage.getItem('THEME'))
-  
-    }
-  
-    useEffect(()=>{
-  
-      setTheme()
-      
-    }, [])
-
     return (
 
         <SafeAreaView style={[tw`flex-1 bg-slate-200 dark:bg-slate-800 w-full h-full`, styles.safeArea]}>

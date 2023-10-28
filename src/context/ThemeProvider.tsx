@@ -9,7 +9,7 @@ interface Theme {
     setAppTheme:(theme: string) => void;
 }
 
-export const ThemeContext = createContext({});
+export const ThemeContext = createContext({ });
 
 export const useTheme = (): Theme => {
 
@@ -19,15 +19,11 @@ export const useTheme = (): Theme => {
 
 export const ThemeProvider = ({ children }:any) => {
 
-    
-    
-    const [ theme, setTheme ] = useState<string>(Storage.storage.getItem('THEME'))
+    const [ theme, setTheme ] = useState<string>()
     
     const [colorScheme, toggleColorScheme, setColorScheme] = useAppColorScheme(tw, Storage.storage.getItem('THEME'));
 
     function setAppTheme(value: string) {
-
-        console.log('tema:', value)
 
         Storage.storage.setItem('THEME', value)
 
@@ -38,9 +34,10 @@ export const ThemeProvider = ({ children }:any) => {
     }
 
     useEffect(()=>{
-    
 
-    },[theme])
+        setAppTheme(Storage.storage.getItem('THEME'))
+        
+    }, [])
     
     return (
 

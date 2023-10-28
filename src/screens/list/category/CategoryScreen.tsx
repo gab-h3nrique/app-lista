@@ -12,9 +12,9 @@ import ItemComponent from './ItemComponent';
 import Button from '../../../components/buttons/Button';
 import { Category } from '../../../providers/storage/functions/CategoryFunctions';
 import Storage from '../../../providers/storage/storage';
-import { useNavigation } from '../../../context/navigation/NavigationProvider';
 import { User, useUser } from '../../../context/UserProvider';
-import { useDataStorage } from '../../../context/StorageDataProvider';
+import { useNavigation } from '../../../../Navigator';
+import useDataStorage from '../../../hooks/useDataStorage';
 
 const { UIManager } = NativeModules;
 
@@ -25,14 +25,15 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 const CategoryScreen = () => {
 
   const { theme } = useTheme()
-  // const { user, setUser } = useUser()
-  const { dataStorage } = useDataStorage()
 
-  const { navigate, screens } = useNavigation()
+  const navigator = useNavigation()
+
+  const { category, selectedList } = useDataStorage()
+  
 
   function selectCategory(category: Category) {
 
-    navigate.open('ItensScreen', { category })
+    navigator.open('ProductsScreen', { category })
 
   }
 
@@ -45,7 +46,7 @@ const CategoryScreen = () => {
 
       <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-        <Button onPress={navigate.closeLast} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+        <Button onPress={navigator.pop} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
           <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 
@@ -53,48 +54,10 @@ const CategoryScreen = () => {
 
       </View>
 
-      <FlatList data={dataStorage.category} style={tw`gap-2 flex-1 w-full h-full`}
-      renderItem={({item}) => <ItemComponent item={item} onPress={() => selectCategory(item)} />}
-      keyExtractor={(item, index) => String(index)}
+      <FlatList data={category} style={tw`gap-2 flex-1 w-full h-full`}
+        renderItem={({item}) => <ItemComponent item={item} onPress={() => selectCategory(item)} />}
+        keyExtractor={(item, index) => String(index)}
       />
-
-      {/* <View style={tw`gap-4 flex justify-start items-center`}>
-
-        {
-          categories.length > 0 ? 
-
-            categories.map(( category, index: number) =>{
-
-              return (
-
-                <React.Fragment key={index}>
-                  <TouchableWithoutFeedback onPress={() => selectCategory(category)}>
-
-                    <View style={tw`p-3 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white`}>
-
-                      <View style={tw`p-1 flex bg-violet-100 rounded-[.7rem]`}>
-                        {category.image ? <Image style={tw`w-8 h-8`} source={{ uri: category.image || '' }} /> : null}
-                      </View>
-              
-                      <Text style={tw`text-slate-400 text-[1.2rem] font-bold`}>{category.name}</Text>
-              
-                      <ChevronSvg height={25} width={25} fill={'#a78bfa'} marginLeft={"auto"}/>
-            
-                    </View>
-
-                  </TouchableWithoutFeedback>
-                </React.Fragment>
-                
-              )
-
-            })
-
-          : null
-
-        }
-
-
-      </View> */}
 
       <View style={tw`gap-2 flex items-center bottom-6 right-3 absolute`}>
 
