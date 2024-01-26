@@ -60,9 +60,21 @@ const ListScreen = () => {
 
     <View style={tw`flex justify-start items-center w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
 
-      <View style={tw`p-2 mt-2`}>
-        <Text  style={tw`text-violet-400 text-[1.5rem] text-center font-bold `}>Minhas Listas</Text>
-      </View>
+    {
+      list && list.length > 0 ?
+
+        <View style={tw`p-2 mt-2`}>
+          <Text  style={tw`text-violet-400 text-[1.5rem] text-center font-bold `}>Minhas Listas</Text>
+        </View>
+
+        : 
+
+        <View style={tw`px-5 py-8 gap-2 items-start flex w-full bg-violet-300 dark:bg-violet-500 rounded-[1.7rem]`}>
+          <Text style={tw`text-white dark:text-slate-300 text-[1.3rem] font-bold`}>Crie sua Lista</Text>
+          <Text style={tw`text-white dark:text-slate-300 text-[1.10rem] font-bold `}>Compare os preços de diferentes supermercados</Text>
+        </View>
+        
+    }
 
       {/* <FlatList data={listState} style={tw`p-4 gap-2 flex w-full h-full`}
       renderItem={({item}) => <ListItemComponent item={item} onPress={() => openEditList(item)} />}

@@ -228,8 +228,8 @@ const Navigator = ({ tab: Tab, children }: Props) => {
 
                     return (
 
-                        <Animated.View key={stack.name} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }, style]}>
-                            <Component key={index} {...stack.props}/>
+                        <Animated.View key={`Animated-${stack.name}`} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }, style]}>
+                            <Component key={`${index}-Screen-${stack.name}`} {...stack.props}/>
                         </Animated.View>
 
                     )
