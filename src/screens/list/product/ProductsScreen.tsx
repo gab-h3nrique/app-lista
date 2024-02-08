@@ -10,7 +10,7 @@ import { useTheme } from '../../../context/ThemeProvider';
 import tw from '../../../libs/tailwind';
 import { Category } from '../../../providers/storage/functions/CategoryFunctions';
 import { Product } from '../../../providers/storage/functions/ProductFunctions';
-import { Item } from '../../../providers/storage/functions/UserStorageFunctions';
+import { Item, List } from '../../../providers/storage/functions/UserStorageFunctions';
 import { useNavigation } from '../../../../Navigator';
 import useDataStorage from '../../../hooks/useDataStorage';
 
@@ -20,11 +20,12 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 interface Props {
 
   category: Category | null;
-  selectItem: any;
+  selectedList: List,
+  saveList: (list: List[]) => void,
 
 }
 
-const ProductsScreen = (props: any) => {
+const ProductsScreen = ({ category, selectedList, saveList }: Props) => {
 
   const [isPending, startTransition] = useTransition()
 
@@ -41,7 +42,7 @@ const ProductsScreen = (props: any) => {
     setTimeout(()=>{
 
       startTransition(()=>{
-        setItens(()=>  product.filter((e)=> props.category ? e.categoryId === props.category.id : e ))
+        setItens(()=>  product.filter((e)=> category ? e.categoryId === category.id : e ))
 
       })
 
@@ -50,7 +51,23 @@ const ProductsScreen = (props: any) => {
 
   },[])
 
-  const selectItem = useCallback((product: Product) => {
+  // const selectItem = useCallback((product: Product) => {
+
+  //   const item: Item = {
+  //     id: -1,
+  //     name: product.name,
+  //     price: 0,
+  //     quantity: 0,
+  //     checked: false,
+  //     image: product.image || '',
+  //     productId: product.id || null,
+  //   }
+
+  //   navigator.open('QuantityScreen', { item })
+
+  // }, [])
+
+  const selectItem = (product: Product) => {
 
     const item: Item = {
       id: -1,
@@ -62,9 +79,9 @@ const ProductsScreen = (props: any) => {
       productId: product.id || null,
     }
 
-    navigator.open('QuantityScreen', { item })
+    navigator.open('QuantityScreen', { item, selectedList, saveList })
 
-  }, [])
+  }
 
   useEffect(()=>{
     setItensList()

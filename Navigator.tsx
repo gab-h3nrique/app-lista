@@ -152,13 +152,9 @@ const Navigator = ({ tab: Tab, children }: Props) => {
 
     const close = useCallback((name: string | string[]) => {
 
-        Animated.timing(positionScreen, {
-            toValue: width,
-            duration: 250,
-            useNativeDriver: true,
-        }).start(() => {
+        positionScreen.setValue(0);
+        Animated.timing(positionScreen, { toValue: width, duration: 250, useNativeDriver: true, }).start(() => {
   
-            positionScreen.setValue(0);
             setConfig(prev => {
 
                 if(prev.stacks.length > 1) return { ...prev, stacks: prev.stacks.filter((e)=> !name.includes(e.name)) };
@@ -229,7 +225,7 @@ const Navigator = ({ tab: Tab, children }: Props) => {
                     return (
 
                         <Animated.View key={`Animated-${stack.name}`} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }, style]}>
-                            <Component key={`${index}-Screen-${stack.name}`} {...stack.props}/>
+                            <Component key={`Screen-${stack.name}-${index}`} {...stack.props}/>
                         </Animated.View>
 
                     )

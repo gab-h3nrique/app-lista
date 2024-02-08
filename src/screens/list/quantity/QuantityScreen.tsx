@@ -8,7 +8,7 @@ import MinusSvg from '../../../components/svg/icons/MinusSvg';
 import tw from '../../../libs/tailwind';
 import { useTheme } from '../../../context/ThemeProvider';
 import Button from '../../../components/buttons/Button';
-import { Item } from '../../../providers/storage/functions/UserStorageFunctions';
+import { Item, List } from '../../../providers/storage/functions/UserStorageFunctions';
 import { User, useUser } from '../../../context/UserProvider';
 import Storage from '../../../providers/storage/storage';
 import { useNavigation } from '../../../../Navigator';
@@ -24,15 +24,17 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 interface Props {
 
   item: Item;
+  selectedList: List;
+  saveList: (list: List[]) => void,
 
 }
 
 
-const QuantityScreen = ({ item }: Props) => {
+const QuantityScreen = ({ item, selectedList, saveList }: Props) => {
 
   const { theme } = useTheme()
 
-  const { selectedList, saveSelectedList, saveList } = useList()
+  // const { selectedList, saveSelectedList, saveList } = useList()
 
   const navigator = useNavigation()
 
@@ -52,24 +54,38 @@ const QuantityScreen = ({ item }: Props) => {
 
   const addItemToList = () => {
 
+    console.log('selectedList aaaaaaaaaaaaaa', selectedList)
+
     if(!selectedList) return console.warn('this list is null')
 
     const newItem = Storage.Item.create({...item, quantity: quantity, listId: selectedList.id})
 
     if(!newItem) return console.warn('error creating item')
 
-    let newItemArray: Item[] = []
-
-    if(selectedList.itens) newItemArray = [newItem, ...selectedList.itens]
-    else newItemArray = [newItem]
-
-    saveSelectedList({ ...selectedList, itens: newItemArray })
-
     saveList(Storage.List.getMany())
 
     navigator.close('ProductsScreen')
     navigator.close('CategoryScreen')
     navigator.close('QuantityScreen')
+
+    // if(!selectedList) return console.warn('this list is null')
+
+    // const newItem = Storage.Item.create({...item, quantity: quantity, listId: selectedList.id})
+
+    // if(!newItem) return console.warn('error creating item')
+
+    // let newItemArray: Item[] = []
+
+    // if(selectedList.itens) newItemArray = [newItem, ...selectedList.itens]
+    // else newItemArray = [newItem]
+
+    // saveSelectedList({ ...selectedList, itens: newItemArray })
+
+    // saveList(Storage.List.getMany())
+
+    // navigator.close('ProductsScreen')
+    // navigator.close('CategoryScreen')
+    // navigator.close('QuantityScreen')
 
   }
 

@@ -13,14 +13,13 @@ import { useNavigation } from '../../../Navigator';
 import useDataStorage from '../../hooks/useDataStorage';
 import useList from '../../hooks/useList';
 import { ListContext } from '../../context/ListProvider';
-// import { useNavigation } from '../../context/navigation/NavigationProvider';
 
 const ListScreen = () => {
   
   const { theme } = useTheme()
   const navigator = useNavigation()
 
-  const { list, saveList, saveSelectedList } = useList()
+  const { list, saveList } = useList()
   // const { list, saveList } = useContext(ListContext)
 
   function createNewList() {
@@ -35,22 +34,9 @@ const ListScreen = () => {
 
   }
 
-  // function saveSelectedList(list: List) {
+  async function openPressedList(selectedList: List) {
 
-  //   // setSelectedList(()=> list)
-  //   // setListState((e)=> e.map((e)=> e.id === list.id ? list : e))
-
-  //   setUser((u: User)=>{
-  //     return {...u, selectedList: list}
-  //   })
-
-  // }
-
-  async function openPressedList(list: List) {
-
-    saveSelectedList(list)
-
-    navigator.open('EditListScreen')
+    navigator.open('EditListScreen', { list, selectedList, saveList })
 
   }
 

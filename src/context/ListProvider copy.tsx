@@ -10,8 +10,10 @@ interface Props {
 
 export interface ListContextType {
 
-  list: List[],
-  saveList: (list: List[])=> void,
+    list: List[],
+    saveList: (list: List[])=> void,
+    selectedList: List | null,
+    saveSelectedList: (list: List)=> void,
 
 }
 
@@ -20,23 +22,20 @@ export const ListContext = createContext({} as ListContextType);
 export default function ListProvider({ children }: Props) {
 
   const [ list, setList ] = useState(Storage.List.getMany());
+  const [ selectedList, setSelectedList ] = useState<List | null>(null);
 
-  // const saveList = useCallback((list: List[]) => setList(()=> list), []);
-  
-  // const contextValue = useMemo(() => ({
-    
-    //   list,
-    //   saveList,
-    
-    // }), [list]);
-    
-  const saveList = (list: List[]) => setList(()=> list);
-  const contextValue = {
+  const saveList = useCallback((list: List[]) => setList(()=> list), []);
+
+  const saveSelectedList = useCallback((list: List) =>  setSelectedList(()=> list), []);
+
+  const contextValue = useMemo(() => ({
 
     list,
     saveList,
+    selectedList,
+    saveSelectedList
 
-  }
+  }), [list, selectedList]);
 
   return (
 

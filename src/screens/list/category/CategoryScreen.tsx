@@ -15,25 +15,33 @@ import Storage from '../../../providers/storage/storage';
 import { User, useUser } from '../../../context/UserProvider';
 import { useNavigation } from '../../../../Navigator';
 import useDataStorage from '../../../hooks/useDataStorage';
+import { List } from '../../../providers/storage/functions/UserStorageFunctions';
 
 const { UIManager } = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
+interface Props {
 
+  selectedList: List,
+  saveList: (list: List[]) => void,
 
-const CategoryScreen = () => {
+}
+
+const CategoryScreen = ({ selectedList, saveList }: Props) => {
+
+  console.log('---------------------------', selectedList)
 
   const { theme } = useTheme()
 
   const navigator = useNavigation()
 
-  const { category, selectedList } = useDataStorage()
+  const { category } = useDataStorage()
   
 
   function selectCategory(category: Category) {
 
-    navigator.open('ProductsScreen', { category })
+    navigator.open('ProductsScreen', { category, selectedList, saveList })
 
   }
 
