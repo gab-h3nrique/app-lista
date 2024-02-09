@@ -24,17 +24,15 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 interface Props {
 
   item: Item;
-  selectedList: List;
-  saveList: (list: List[]) => void,
 
 }
 
 
-const QuantityScreen = ({ item, selectedList, saveList }: Props) => {
+const QuantityScreen = ({ item }: Props) => {
 
   const { theme } = useTheme()
 
-  // const { selectedList, saveSelectedList, saveList } = useList()
+  const { selectedList, saveSelectedList } = useList()
 
   const navigator = useNavigation()
 
@@ -54,38 +52,17 @@ const QuantityScreen = ({ item, selectedList, saveList }: Props) => {
 
   const addItemToList = () => {
 
-    console.log('selectedList aaaaaaaaaaaaaa', selectedList)
+    if(!selectedList || !selectedList.id) return console.warn('this list is null')
 
-    if(!selectedList) return console.warn('this list is null')
+    const id = new Date().getTime()
 
-    const newItem = Storage.Item.create({...item, quantity: quantity, listId: selectedList.id})
+    const newItem: Item = { ...item, id: id, quantity: quantity, listId: selectedList.id, updatedAt: new Date().getTime(), createdAt: new Date().getTime() }
 
-    if(!newItem) return console.warn('error creating item')
-
-    saveList(Storage.List.getMany())
+    saveSelectedList({...selectedList, itens: [newItem, ...selectedList.itens]})
 
     navigator.close('ProductsScreen')
     navigator.close('CategoryScreen')
     navigator.close('QuantityScreen')
-
-    // if(!selectedList) return console.warn('this list is null')
-
-    // const newItem = Storage.Item.create({...item, quantity: quantity, listId: selectedList.id})
-
-    // if(!newItem) return console.warn('error creating item')
-
-    // let newItemArray: Item[] = []
-
-    // if(selectedList.itens) newItemArray = [newItem, ...selectedList.itens]
-    // else newItemArray = [newItem]
-
-    // saveSelectedList({ ...selectedList, itens: newItemArray })
-
-    // saveList(Storage.List.getMany())
-
-    // navigator.close('ProductsScreen')
-    // navigator.close('CategoryScreen')
-    // navigator.close('QuantityScreen')
 
   }
 

@@ -20,8 +20,6 @@ const AnimatedScreen = ({open, style, children}: Props) => {
 
   function changeScreen() {
 
-    console.log('------------------------------renderizando tela animada')
-
     if(open) Animated.timing(positionScreen, { toValue: 0, duration: 300, useNativeDriver: false, }).start();
     if(!open) Animated.timing(positionScreen, { toValue: -500, delay: 1000, duration: 300, useNativeDriver: false}).start();
     

@@ -32,7 +32,7 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
   const navigator = useNavigation()
 
-  const { selectedList, saveSelectedList, saveList } = useList()
+  const { selectedList, saveSelectedList } = useList()
 
   const [ item, setItem ] = useState<Item>(selectedItem)
 
@@ -60,25 +60,17 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
   }
 
-  function editPrice(event: any) {
-    console.log('event', event)
+  function editPrice(text: any) {
+
+    setItem((prev)=>({...prev, price: Number(text)}))
+
   }
 
   function removeItem(id: number) {
 
     if(!selectedList) return console.warn('this list is null')
 
-    const isDeleted = Storage.Item.delete(id)
-
-    if(!isDeleted) return console.warn('error removing item')
-
-    const updatedList = Storage.List.get(selectedList.id)
-
-    if(!updatedList) return console.warn('this item was not updated');
-
-    saveSelectedList(updatedList)
-
-    saveList(Storage.List.getMany())
+    saveSelectedList({...selectedList, itens: selectedList.itens.filter((i)=> i.id !== id) })
 
     navigator.pop()
 
@@ -86,17 +78,11 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
   function saveItem(item: Item) {
 
-    const editedItem = Storage.Item.update(item.id, item)
+    if(!selectedList || !selectedList.id) return console.warn('this list is null')
 
-    if(!editedItem) return console.warn('error editing item')
+    const newDate = new Date().getTime()
 
-    if(!selectedList) return console.warn('any list was selected')
-
-    const updatedList = Storage.List.get(selectedList.id)
-
-    if(!updatedList) return console.warn('error getting selectedlist') 
-
-    saveSelectedList(updatedList)
+    saveSelectedList({...selectedList, itens: selectedList.itens.map((i)=> i.id === item.id ? {...item, updatedAt: newDate} : i) })
 
     navigator.pop()
 
@@ -159,9 +145,10 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
             <View style={tw`px-3 flex flex-row w-full justify-center`}>
     
-              <View style={tw`flex py-2 px-12 rounded-[1rem] items-center justify-center bg-white dark:bg-slate-700`}>
-  
-                <TextInput onChangeText={editPrice} value={`R$${item?.price || '0.00'}`} keyboardType="numeric" style={tw`p-0 text-violet-400 text-[1.9rem] text-center font-bold relative`} />
+              <View style={tw`flex flex-row gap-2 py-2 px-12 rounded-[1rem] items-center justify-center bg-white dark:bg-slate-700`}>
+
+                <Text style={tw`p-0 text-violet-400 text-[1.9rem] text-center font-bold `}>R$</Text>
+                <TextInput onChangeText={editPrice} value={`${item?.price}`} keyboardType="numeric" style={tw`p-0 text-violet-400 text-[1.9rem] text-center font-bold relative`} />
   
               </View>
     

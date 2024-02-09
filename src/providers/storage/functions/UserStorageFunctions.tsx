@@ -34,10 +34,6 @@ function functionList() {
 
     const GET_BY_ID = (id: number): List | null => GET_ALL().find((e: List)=> e.id === id) || null;
 
-    const GET_ALL_ITENS = (): Item[] => AsyncStorageFunctions.getItem(ITENS)
-
-    const GET_BY_LIST_ID = (id : number): Item[] => (AsyncStorageFunctions.getItem(ITENS) || []).filter((e: Item)=> e.listId === id)
-
     return {
 
         get(id: number):List | null {
@@ -48,7 +44,7 @@ function functionList() {
 
                 if(!list) return null
 
-                return {...list, itens: GET_BY_LIST_ID(id) }
+                return list
 
             } catch(error) { console.error('erro in get list on storage', error); return null}
 
@@ -67,15 +63,13 @@ function functionList() {
                 if(name) filteredList = data.filter((e)=> e.name.includes(name))
                 else filteredList = data
 
-                const newList = filteredList.map((e)=> { return {...e, itens: GET_BY_LIST_ID(e.id)} })
-
-                return newList
+                return filteredList
 
             } catch(error) { console.error('erro in getMany list on storage', error); return []}
 
         },
 
-        create(list: { name: string, checked: boolean}): List | null {
+        create(list: { name: string, checked: boolean; itens?: Item[] }): List | null {
 
             try{
 
@@ -92,7 +86,7 @@ function functionList() {
                     id: id,
                     name: notRepeatedName,
                     checked: list.checked,
-                    itens: [],
+                    itens: list.itens || [],
                     updatedAt: new Date().getTime(),
                     createdAt: new Date().getTime(),
                 }
@@ -113,11 +107,26 @@ function functionList() {
 
                 const newDate = new Date().getTime()
     
-                SET(data.map((e)=> e.id === id ? {...list, id: e.id, updatedAt: newDate, itens: []} : e))
-    
+                // SET(data.map((e)=> e.id === id ? {...list, id: e.id, updatedAt: newDate, itens: []} : e))
+                SET(data.map((e)=> e.id === id ? {...list, id: e.id, updatedAt: newDate} : e))
+
                 return GET_BY_ID(id)
 
             } catch(error) { console.error('erro in update list on storage', error); return null }
+
+        },
+
+        updateMany(lists: List[]): List[] | null {
+
+            try {
+
+                const data = GET_ALL()
+
+                SET(lists)
+    
+                return GET_ALL()
+
+            } catch(error) { console.error('erro in update lists on storage', error); return null }
 
         },
 

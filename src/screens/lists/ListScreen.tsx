@@ -7,47 +7,44 @@ import tw from '../../libs/tailwind';
 import { useTheme } from '../../context/ThemeProvider';
 import ListItemComponent from './components/ListItemComponent';
 import { List } from '../../providers/storage/functions/UserStorageFunctions';
-import Storage from '../../providers/storage/storage';
-import { User, useUser } from '../../context/UserProvider';
 import { useNavigation } from '../../../Navigator';
-import useDataStorage from '../../hooks/useDataStorage';
 import useList from '../../hooks/useList';
-import { ListContext } from '../../context/ListProvider';
 
 const ListScreen = () => {
   
   const { theme } = useTheme()
   const navigator = useNavigation()
 
-  const { list, saveList } = useList()
-  // const { list, saveList } = useContext(ListContext)
+  const { lists, saveLists, createList, saveSelectedList } = useList()
 
   function createNewList() {
 
-    const newList = Storage.List.create({name: `Nova lista`, checked: false})
+    const newList = createList({name: `Nova lista`, checked: false})
 
     if(!newList) return console.error('list was not created')
 
+    saveSelectedList(newList)
+
     navigator.open('EditListScreen')
-    
-    saveList(Storage.List.getMany())
 
   }
 
   async function openPressedList(selectedList: List) {
 
-    navigator.open('EditListScreen', { list, selectedList, saveList })
+    saveSelectedList(selectedList)
+
+    navigator.open('EditListScreen')
 
   }
-
-  console.log('------------------------------renderizando ListScreen')
 
   return (
 
     <View style={tw`flex justify-start items-center w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
 
-    {
-      list && list.length > 0 ?
+      <Text style={tw`text-violet-400 text-[1.5rem] h-9 text-center font-bold absolute z-2 m-auto top-3 bottom-0`}>Minhas Listas</Text>
+
+    {/* {
+      lists && lists.length > 0 ?
 
         <View style={tw`p-2 mt-2`}>
           <Text  style={tw`text-violet-400 text-[1.5rem] text-center font-bold `}>Minhas Listas</Text>
@@ -60,18 +57,19 @@ const ListScreen = () => {
           <Text style={tw`text-white dark:text-slate-300 text-[1.10rem] font-bold `}>Compare os preços de diferentes supermercados</Text>
         </View>
         
-    }
-
-      {/* <FlatList data={listState} style={tw`p-4 gap-2 flex w-full h-full`}
-      renderItem={({item}) => <ListItemComponent item={item} onPress={() => openEditList(item)} />}
-      keyExtractor={(item, index) => String(index)}
-      />
+    } */}
 
       {
-        listState.length === 0 ?
+        lists && lists.length > 0 ?
 
+          <FlatList data={lists} style={tw`p-4 gap-0 flex w-full h-full pt-12`}
+          renderItem={({item}) => <ListItemComponent item={item} onPress={() => openPressedList(item)} />}
+          keyExtractor={(item, index) => String(index)}
+          />
+
+        :
           <View style={tw`p-5 gap-8 justify-center items-center flex w-full`}>
-              
+            
             <View style={tw`p-14 rounded-full bg-white dark:bg-slate-700`}>
               <ShoppingSvg height={200} width={200} fill={theme == 'dark' ? '#cbd5e1':'#FFFFFF'} />
             </View>
@@ -85,15 +83,14 @@ const ListScreen = () => {
 
           </View>
 
-        : null
-      } */}
+      }
 
-      <ScrollView>
+      {/* <ScrollView>
 
         <View style={tw`mb-[3.5rem] p-4 gap-3 flex justify-start items-center w-full h-full`}>
 
           {
-            list && list.length > 0 ? list.map((e: List, i) => 
+            lists && lists.length > 0 ? lists.map((e: List, i) => 
               <React.Fragment key={i}>
                 <ListItemComponent item={e} onPress={() => openPressedList(e)} /> 
               </React.Fragment>
@@ -118,7 +115,7 @@ const ListScreen = () => {
 
         </View>
 
-      </ScrollView>
+      </ScrollView> */}
 
 
       <Button onPress={createNewList} style={tw`bottom-22 right-3 w-16 h-16 rounded-full flex justify-center items-center bg-violet-400 absolute`}>

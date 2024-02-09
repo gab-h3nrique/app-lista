@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleProp, TextStyle } from 'react-native'
 import React from 'react'
 import { List } from '../../../providers/storage/functions/UserStorageFunctions'
 import Button from '../../../components/buttons/Button'
@@ -11,15 +11,18 @@ import { useTheme } from '../../../context/ThemeProvider'
 interface Props {
     item: List
     onPress: any
+    style?: StyleProp<TextStyle> | undefined;
 }
 
-const ListItemComponent = ({ item, onPress }: Props) => {
+const ListItemComponent = ({ item, onPress, style }: Props) => {
 
   const { theme } = useTheme()
 
+  const sum = item.itens.filter(({price})=> Number(price) > 0).map(e=> Number(e.price) * e.quantity).reduce((a, c) => a + c, 0)
+
   return (
 
-    <Button onPress={onPress} style={tw`p-2 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white dark:bg-slate-700`}>
+    <Button onPress={onPress} style={tw`p-2 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white dark:bg-slate-700 mb-3`}>
       
       <View style={tw`p-2 flex bg-violet-100 dark:bg-violet-500 rounded-[.7rem]`}>
         <ShoppingSvg height={25} width={25} fill={theme == 'dark' ? '#cbd5e1':'#a78bfa'}/>
@@ -31,8 +34,8 @@ const ListItemComponent = ({ item, onPress }: Props) => {
 
         <View style={tw`gap-2 flex flex-row`}>
 
-          <Text style={tw`px-2 py-1 text-[.51rem] font-bold text-center rounded-full bg-slate-200 text-slate-500 dark:bg-slate-300 text-slate-700`}>{item.itens && item.itens.length || 0} itens</Text>
-          <Text style={tw`px-2 py-1 text-[.51rem] font-bold text-center rounded-full bg-slate-200 text-slate-500 dark:bg-slate-300 text-slate-700`}>R${0.0}</Text>
+          <Text style={tw`px-2 py-1 text-[.51rem] font-bold text-center rounded-full bg-slate-200 text-slate-500 dark:bg-slate-300 text-slate-700`}>{ item.itens && item.itens.length || 0 } itens</Text>
+          <Text style={tw`px-2 py-1 text-[.51rem] font-bold text-center rounded-full bg-slate-200 text-slate-500 dark:bg-slate-300 text-slate-700`}>R${ sum }</Text>
 
         </View>
 

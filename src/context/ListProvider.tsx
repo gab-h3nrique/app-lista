@@ -10,8 +10,12 @@ interface Props {
 
 export interface ListContextType {
 
-  list: List[],
-  saveList: (list: List[])=> void,
+  lists: List[],
+  selectedList: List | null,
+  saveLists: (lists: List[])=> void,
+  createList: (lists: {name: `Nova lista`, checked: false})=> List | null,
+  saveSelectedList: (list: List)=> void,
+  
 
 }
 
@@ -19,24 +23,66 @@ export const ListContext = createContext({} as ListContextType);
 
 export default function ListProvider({ children }: Props) {
 
-  const [ list, setList ] = useState(Storage.List.getMany());
 
-  // const saveList = useCallback((list: List[]) => setList(()=> list), []);
+  
+
+  const [ lists, setLists ] = useState(Storage.List.getMany());
+  const [ selectedList, setSelectedList ] = useState<List | null>(null);
+
+  const createList = (lists: {name: string, checked: boolean}) => {
+
+    const newList = Storage.List.create(lists)
+
+    setLists(()=> Storage.List.getMany())
+
+    return newList
+  
+  }
+
+  const saveLists =(lists: List[]) => {
+
+    Storage.List.updateMany(lists)
+    setLists(()=> lists)
+  
+  }
+
+  const saveSelectedList =(list: List) => {
+    
+    setSelectedList(()=> Storage.List.update(list.id, list))
+    setLists(()=> Storage.List.getMany())
+
+  }
+  
+  const contextValue = {
+    
+    lists,
+    selectedList,
+    saveLists,
+    createList,
+    saveSelectedList,
+    
+  }
+
+  // const saveLists = useCallback((lists: List[]) => {
+
+  //   setLists(()=> lists)
+  
+  // }, []);
+  // const saveSelectedList = useCallback((list: List) => {
+    
+  //   setSelectedList(()=> list)
+
+  // }, []);
   
   // const contextValue = useMemo(() => ({
     
-    //   list,
-    //   saveList,
+  //   lists,
+  //   selectedList,
+  //   saveLists,
+  //   saveSelectedList,
     
-    // }), [list]);
+  // }), [lists, selectedList]);
     
-  const saveList = (list: List[]) => setList(()=> list);
-  const contextValue = {
-
-    list,
-    saveList,
-
-  }
 
   return (
 

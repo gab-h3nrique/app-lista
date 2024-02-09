@@ -20,12 +20,10 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 interface Props {
 
   category: Category | null;
-  selectedList: List,
-  saveList: (list: List[]) => void,
 
 }
 
-const ProductsScreen = ({ category, selectedList, saveList }: Props) => {
+const ProductsScreen = ({ category }: Props) => {
 
   const [isPending, startTransition] = useTransition()
 
@@ -79,7 +77,7 @@ const ProductsScreen = ({ category, selectedList, saveList }: Props) => {
       productId: product.id || null,
     }
 
-    navigator.open('QuantityScreen', { item, selectedList, saveList })
+    navigator.open('QuantityScreen', { item })
 
   }
 

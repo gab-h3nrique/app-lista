@@ -18,42 +18,20 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 
 interface Props {
 
-  list: List[],
   selectedList: List,
-  saveList: (list: List[]) => void,
 
 }
 
 
 
 
-const EditListScreen = ({ list, selectedList, saveList}: Props) => {
+const EditListScreen = () => {
+
 
   const { theme } = useTheme()
   const navigator = useNavigation()
 
-  const [name, setName] = useState<string>(selectedList.name)
-  const [itens, setItens] = useState<Item[]>(selectedList.itens)
-
-  const changeName = (name: string) => {
-
-    setName(()=>name)
-
-    editSelectedList({...selectedList, name: name})
-    
-  }
-
-  function editSelectedList(newList: List) {
-
-    if(!selectedList) return console.warn('this list is null')
-
-    const updatedList = Storage.List.update(selectedList.id, newList)
-    
-    if(!updatedList) return console.warn('error updating list')
-
-    saveList(Storage.List.getMany())
-
-  }
+  const { selectedList, saveSelectedList } = useList()
 
   function openEditItemScreen(item: Item) {
 
@@ -63,50 +41,17 @@ const EditListScreen = ({ list, selectedList, saveList}: Props) => {
 
   function editCheckItem(item: Item) {
 
-    const editedItem = Storage.Item.update(item.id, item)
+    if(!selectedList || !selectedList.id) return console.warn('this list is null')
 
-    if(!selectedList) return console.warn('any list was selected')
-
-    if(!editedItem) return console.warn('error editing item')
-
-    const updatedList = Storage.List.get(selectedList.id)
-
-
-    if(updatedList) setItens(updatedList.itens)
-
-    // saveList(Storage.List.getMany())
-
-
-    
-
-  //   const editedItem = Storage.Item.update(item.id, item)
-
-  //   if(!editedItem) return console.warn('error editing item')
-
-  //   if(!selectedList) return console.warn('any list was selected')
-
-  //   const updatedList = Storage.List.get(selectedList.id)
-
-  //   if(!updatedList) return console.warn('error getting selectedlist') 
-
-  //   saveSelectedList(updatedList)
+    saveSelectedList({...selectedList, itens: selectedList.itens.map((e)=> e.id === item.id ? item : e)})
 
   }
 
   function addNewItem() {
 
-    navigator.open('CategoryScreen', { selectedList, saveList })
+    navigator.open('CategoryScreen')
 
   }
-
-  useEffect(() => {
-  
-    console.log('daleeee')
-
-  }, [selectedList, list])
-  
-
-  console.log('------------------------------renderizando EditListScreen')
 
   return (
     
@@ -118,7 +63,7 @@ const EditListScreen = ({ list, selectedList, saveList}: Props) => {
           <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 
-        <TextInput onChangeText={changeName} value={name} style={tw`text-slate-400 dark:text-slate-300 text-center font-bold text-[1.2rem]`}/>
+        <TextInput onChangeText={(text)=> selectedList && saveSelectedList({...selectedList, name: text})} value={selectedList?.name} style={tw`text-slate-400 dark:text-slate-300 text-center font-bold text-[1.2rem]`}/>
         {/* <TextInput onChangeText={(event)=> list && editSelectedList({...list, name: event})} value={list.name} style={tw`text-slate-400 dark:text-slate-300 text-center font-bold text-[1.2rem]`}/> */}
 
       </View>
@@ -140,7 +85,7 @@ const EditListScreen = ({ list, selectedList, saveList}: Props) => {
                 <Image height={130} width={130} source={require('../../assets/images/foods.png')} />
               </View>
 
-              <Button onPress={() => navigator.open('CategoryScreen')} style={tw`p-4 gap-4 rounded-[1.2rem] w-full flex flex-row justify-center items-center bg-white dark:bg-slate-700`} >
+              <Button onPress={addNewItem} style={tw`p-4 gap-4 rounded-[1.2rem] w-full flex flex-row justify-center items-center bg-white dark:bg-slate-700`} >
                 <PlusSvg height={28} width={28} fill={theme == 'dark' ? '#CBD5E1':'#94A3B8'} style={{ transform: [{ rotateY: '180deg' }] }}/>
                 <Text style={tw`text-slate-400 dark:text-slate-300 text-[1.15rem] text-center font-bold `}>Adicione um item</Text>
               </Button>
@@ -150,7 +95,7 @@ const EditListScreen = ({ list, selectedList, saveList}: Props) => {
           )
         } */}
 
-        {/* {
+        {
           selectedList && selectedList.itens.length > 0 ? (
 
             selectedList.itens.map(( item: Item, i: number) =>
@@ -175,15 +120,15 @@ const EditListScreen = ({ list, selectedList, saveList}: Props) => {
             </View>
             
           )
-        } */}
+        }
 
-        {
+        {/* {
           itens.map(( item: Item, i: number) =>
             <React.Fragment key={i}>
               <ItemListComponent item={item} onPress={() => openEditItemScreen(item)} onPressCheck={() => editCheckItem({...item, checked: !item.checked})}/>
             </React.Fragment>
           )
-        }
+        } */}
 
       </View>
 

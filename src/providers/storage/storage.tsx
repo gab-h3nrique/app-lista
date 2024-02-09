@@ -14,7 +14,7 @@ const Storage = {
     Brand: BrandFunctions,
     Product: ProductFunctions,
     List: ListFunctions,
-    Item: itemFunctions,
+    // Item: itemFunctions,
 
 }
 
@@ -23,7 +23,6 @@ export default Storage
 console.debug('-------------------------renderizando app')
 
 // Storage.storage.setItem('USER_LISTS', '')
-// Storage.storage.setItem( 'USER_ITENS', '')
 
 
 // Storage.storage.setItem('CATEGORIES', 

@@ -24,13 +24,11 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 interface Props {
 
   selectedList: List,
-  saveList: (list: List[]) => void,
+  saveLists: (list: List[]) => void,
 
 }
 
-const CategoryScreen = ({ selectedList, saveList }: Props) => {
-
-  console.log('---------------------------', selectedList)
+const CategoryScreen = () => {
 
   const { theme } = useTheme()
 
@@ -41,12 +39,10 @@ const CategoryScreen = ({ selectedList, saveList }: Props) => {
 
   function selectCategory(category: Category) {
 
-    navigator.open('ProductsScreen', { category, selectedList, saveList })
+    navigator.open('ProductsScreen', { category })
 
   }
-
-  console.log('---------------------------CategoryScreen')
-
+  
   return (
 
     <View style={tw`flex p-3 gap-5 w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
