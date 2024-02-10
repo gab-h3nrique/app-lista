@@ -9,20 +9,24 @@ import { useTheme } from '../../../context/ThemeProvider'
 
 
 interface Props {
+    index: Number
+    length: Number
     item: List
     onPress: any
     style?: StyleProp<TextStyle> | undefined;
 }
 
-const ListItemComponent = ({ item, onPress, style }: Props) => {
+const ListItemComponent = ({ index, length, item, onPress, style }: Props) => {
 
   const { theme } = useTheme()
 
-  const sum = item.itens.filter(({price})=> Number(price) > 0).map(e=> Number(e.price) * e.quantity).reduce((a, c) => a + c, 0)
+  const sum = item && item.itens && item.itens.filter(({price})=> Number(price) > 0).map(e=> Number(e.price) * e.quantity).reduce((a, c) => a + c, 0)
+
+  const lastItem = index === length as number - 1
 
   return (
 
-    <Button onPress={onPress} style={tw`p-2 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white dark:bg-slate-700 mb-3`}>
+    <Button onPress={onPress} style={tw`p-2 gap-4 justify-start items-center rounded-[1.2rem] flex flex-row w-full bg-white dark:bg-slate-700 mb-3 ${lastItem ? 'mb-[5.4rem]' : 'mb-3'}`}>
       
       <View style={tw`p-2 flex bg-violet-100 dark:bg-violet-500 rounded-[.7rem]`}>
         <ShoppingSvg height={25} width={25} fill={theme == 'dark' ? '#cbd5e1':'#a78bfa'}/>

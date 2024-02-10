@@ -12,6 +12,7 @@ import { Item, List } from '../../../providers/storage/functions/UserStorageFunc
 import { useNavigation } from '../../../../Navigator';
 import Storage from '../../../providers/storage/storage';
 import useList from '../../../hooks/useList';
+import ArrowSvg from '../../../components/svg/icons/ArrowSvg';
 
 const { UIManager } = NativeModules;
 
@@ -62,7 +63,9 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
   function editPrice(text: any) {
 
-    setItem((prev)=>({...prev, price: Number(text)}))
+    setItem((prev)=>({...prev, price: brMask(text)}))
+
+    console.log('item', item)
 
   }
 
@@ -88,6 +91,41 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
   }
 
+  const positionPlusButton = useRef(new Animated.Value(0)).current;
+  const scalePlusButton = useRef(new Animated.Value(1)).current;
+
+  let currentOffset = 0;
+  let scrollDirection = ''
+  const handleScroll = (event: any) => {
+
+    if(event.nativeEvent.contentOffset.y <= 0) return
+
+    let direciton = event.nativeEvent.contentOffset.y > currentOffset ? 'down' : 'up';
+
+    currentOffset = event.nativeEvent.contentOffset.y;
+
+    if(direciton == scrollDirection) return;
+
+    scrollDirection = direciton
+
+    if(direciton == 'down') Animated.timing(positionPlusButton, { toValue: 80, duration: 200, useNativeDriver: true }).start();
+    else Animated.timing(positionPlusButton, { toValue: 0, duration: 200, useNativeDriver: true }).start();
+
+    if(direciton == 'down') Animated.timing(scalePlusButton, { toValue: 0, duration: 200, useNativeDriver: true }).start();
+    else Animated.timing(scalePlusButton, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+
+  };
+
+  function brMask(i:any) {
+
+    let v = i.replace(/\D/g,'');
+    v = (v/100).toFixed(2) + '';
+    // v = v.replace(".", ",");
+    i = v;
+    return i
+
+  }
+
 
   return (
 
@@ -98,8 +136,8 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
           <View style={tw`items-center justify-center flex flex-row w-full relative`}>
 
-            <Button onPress={navigator.pop} style={tw`left-0 top-2 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
-              <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
+            <Button onPress={navigator.pop} style={tw`left-0 top-2 w-10 h-10 rounded-full bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+              <ArrowSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
             </Button>
 
             <Text style={tw`text-slate-500 dark:text-slate-300 text-[2rem] text-center font-bold`}>Editar</Text>

@@ -1,5 +1,5 @@
-import { View, Text, TouchableWithoutFeedback, Pressable } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableWithoutFeedback, Pressable, PressableProps } from 'react-native'
+import React, { FC, RefAttributes } from 'react'
 
 const Button = (props: any) => {
 

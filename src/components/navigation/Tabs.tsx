@@ -51,22 +51,22 @@ const Tabs = () => {
 
   return (
 
-    <View style={[tw`py-3 px-6 rounded-t-[35px] bottom-0 absolute flex flex-row justify-between items-center w-full bg-white dark:bg-slate-700`, {zIndex: 0}]}>
+    <View style={[tw`py-[.7rem] px-8 rounded-t-[30px] bottom-0 absolute flex flex-row justify-between items-center w-full bg-white dark:bg-slate-700`, {zIndex: 0}]}>
 
       <Button onPress={()=> switchTo('HomeScreen')}>
-        <HouseSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'HomeScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'HomeScreen' ? '#A78BFA' : '#D1D5DB') }/>
+        <HouseSvg height={36} width={36} fill={theme == 'dark' ? ( selectedScreen == 'HomeScreen' ? '#8B5CF6' : '#CBD5E1') : ( selectedScreen  == 'HomeScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
       <Button onPress={()=> switchTo('ListScreen')}>
-        <ListSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'ListScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'ListScreen' ? '#A78BFA' : '#D1D5DB') }/>
+        <ListSvg height={36} width={36} fill={theme == 'dark' ? ( selectedScreen == 'ListScreen' ? '#8B5CF6' : '#CBD5E1') : ( selectedScreen  == 'ListScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
-      <Button onPress={()=> switchTo('MapScreen')}>
-        <LocationDotSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'MapScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'MapScreen' ? '#A78BFA' : '#D1D5DB') }/>
+      <Button onPress={()=> switchTo('SelectListTopMap')}>
+        <LocationDotSvg height={36} width={36} fill={theme == 'dark' ? ( selectedScreen == 'SelectListTopMap' ? '#8B5CF6' : '#CBD5E1') : ( selectedScreen  == 'SelectListTopMap' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
       <Button onPress={()=> switchTo('UserScreen')}>
-        <UserSvg height={38} width={38} fill={theme == 'dark' ? ( selectedScreen == 'UserScreen' ? '#8B5CF6' : '#94A3B8') : ( selectedScreen  == 'UserScreen' ? '#A78BFA' : '#D1D5DB') }/>
+        <UserSvg height={36} width={36} fill={theme == 'dark' ? ( selectedScreen == 'UserScreen' ? '#8B5CF6' : '#CBD5E1') : ( selectedScreen  == 'UserScreen' ? '#A78BFA' : '#D1D5DB') }/>
       </Button>
 
     </View>

@@ -11,6 +11,7 @@ import { Item, List } from '../../providers/storage/functions/UserStorageFunctio
 import Storage from '../../providers/storage/storage';
 import { useNavigation } from '../../../Navigator';
 import useList from '../../hooks/useList';
+import ArrowSvg from '../../components/svg/icons/ArrowSvg';
 
 const { UIManager } = NativeModules;
 
@@ -59,8 +60,8 @@ const EditListScreen = () => {
 
       <View style={tw`p-3 justify-center items-center flex flex-row w-full relative`}>
 
-        <Button onPress={navigator.pop} style={tw`left-2 top-5 w-9 h-8 rounded-[.6rem] bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
-          <ChevronSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
+        <Button onPress={navigator.pop} style={tw`left-3 top-5 w-10 h-10 rounded-full bg-slate-400 dark:bg-slate-700 flex items-center justify-center absolute`} >
+          <ArrowSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
 
         <TextInput onChangeText={(text)=> selectedList && saveSelectedList({...selectedList, name: text})} value={selectedList?.name} style={tw`text-slate-400 dark:text-slate-300 text-center font-bold text-[1.2rem]`}/>
