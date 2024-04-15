@@ -37,11 +37,11 @@ const QuantityScreen = ({ item }: Props) => {
 
   const navigator = useNavigation()
 
-  const [ quantity, setQuantity ] = useState(item?.quantity || 0)
+  const [ quantity, setQuantity ] = useState(item?.quantity || 1)
 
   const subtractQuantity = () => {
 
-    setQuantity(prev=> prev > 0 ? prev - 1 : 0)
+    setQuantity(prev=> prev > 0 ? prev - 1 : 1)
 
   }
 

@@ -11,16 +11,18 @@ import CheckSolidSvg from '../../components/svg/icons/CheckSolidSvg'
 
 interface Props {
 
+    index: number
     item: Item
     onPress: any
     onPressCheck: any
 }
 
-const ItemListComponent = ({item, onPress, onPressCheck}: Props) => {
+const ItemListComponent = ({index, item, onPress, onPressCheck}: Props) => {
 
     const { theme } = useTheme()
 
     const sum = item.price * item.quantity
+
 
     return (
 
@@ -38,7 +40,9 @@ const ItemListComponent = ({item, onPress, onPressCheck}: Props) => {
                 <Text style={tw`text-slate-400 dark:text-slate-300 text-[.8rem] font-bold`}>{item.name}</Text>
 
                 <View style={tw`gap-2 flex flex-row`}>
-                    <Text style={tw`px-2 py-1 text-[.51rem] font-bold text-center rounded-full bg-slate-200 text-slate-500 dark:bg-slate-300 text-slate-700`}>R${Number(item.price) * item.quantity || ' -'}</Text>
+                    <View style={tw`px-2 py-1 rounded-full bg-slate-200 dark:bg-slate-300`}>
+                        <Text style={tw`text-[.51rem] font-bold text-center text-slate-500 text-slate-700`}>R${ sum }</Text>
+                    </View>
                 </View>
 
             </View>

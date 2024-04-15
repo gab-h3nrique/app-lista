@@ -86,6 +86,33 @@ const ProductsScreen = ({ category }: Props) => {
     setItensList()
   },[])
 
+
+
+  const positionPlusButton = useRef(new Animated.Value(0)).current;
+  const scalePlusButton = useRef(new Animated.Value(1)).current;
+
+  let currentOffset = 0;
+  let scrollDirection = ''
+  const handleScroll = (event: any) => {
+
+    if(event.nativeEvent.contentOffset.y <= 0) return
+
+    let direciton = event.nativeEvent.contentOffset.y > currentOffset ? 'down' : 'up';
+
+    currentOffset = event.nativeEvent.contentOffset.y;
+
+    if(direciton == scrollDirection) return;
+
+    scrollDirection = direciton
+
+    if(direciton == 'down') Animated.timing(positionPlusButton, { toValue: 80, duration: 200, useNativeDriver: true }).start();
+    else Animated.timing(positionPlusButton, { toValue: 0, duration: 200, useNativeDriver: true }).start();
+
+    if(direciton == 'down') Animated.timing(scalePlusButton, { toValue: 0, duration: 200, useNativeDriver: true }).start();
+    else Animated.timing(scalePlusButton, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+
+  };
+
   return (
 
     <View style={tw`flex p-3 gap-5 w-full h-full bg-slate-200 dark:bg-slate-800 relative`}>
@@ -100,7 +127,7 @@ const ProductsScreen = ({ category }: Props) => {
 
       </View>
 
-      <FlatList data={itens} style={tw`gap-2 flex-1 w-full h-full`}
+      <FlatList onScroll={handleScroll} data={itens} style={tw`gap-2 flex-1 w-full h-full`}
         renderItem={({item}) => <ItemComponent item={item} onPress={() => selectItem(item)} />}
         keyExtractor={(item, index) => String(index)}
       />
@@ -119,17 +146,17 @@ const ProductsScreen = ({ category }: Props) => {
         renderItem={(item) => (<Text>aaa</Text>)}
       /> */}
 
-      <View style={tw`gap-2 flex items-center bottom-6 right-3 absolute`}>
+      <Animated.View style={[tw`gap-2 flex items-center bottom-6 absolute right-3`, { transform: [{ translateY: positionPlusButton }, { scale: scalePlusButton}] }]}>
 
         <Button onPress={() => {}} style={tw`w-8 h-8 rounded-full flex justify-center items-center bg-slate-400 dark:bg-slate-700`}>
           <PenSvg height={13} width={13} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'}/>
         </Button>
 
-        <Button onPress={() => {}} style={tw`w-16 h-16 rounded-full flex justify-center items-center bg-violet-400`} >
-          <SearchSvg height={30} width={30} fill={theme == 'dark' ? '#334155':'#FFFFFF'}/>
+        <Button onPress={() => {}} style={tw`w-14 h-14 rounded-full flex justify-center items-center bg-violet-400`} >
+          <SearchSvg height={28} width={28} fill={theme == 'dark' ? '#334155':'#FFFFFF'}/>
         </Button>
         
-      </View>
+      </Animated.View>
 
     </View>
 

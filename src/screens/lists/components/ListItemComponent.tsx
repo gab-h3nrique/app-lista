@@ -38,8 +38,13 @@ const ListItemComponent = ({ index, length, item, onPress, style }: Props) => {
 
         <View style={tw`gap-2 flex flex-row`}>
 
-          <Text style={tw`px-2 py-1 text-[.51rem] font-bold text-center rounded-full bg-slate-200 text-slate-500 dark:bg-slate-300 text-slate-700`}>{ item.itens && item.itens.length || 0 } itens</Text>
-          <Text style={tw`px-2 py-1 text-[.51rem] font-bold text-center rounded-full bg-slate-200 text-slate-500 dark:bg-slate-300 text-slate-700`}>R${ sum }</Text>
+          <View style={tw`px-2 py-1 rounded-full bg-slate-200 dark:bg-slate-300`}>
+            <Text style={tw`text-[.51rem] font-bold text-center text-slate-500 text-slate-700`}>{ item.itens && item.itens.length || 0 } itens</Text>
+          </View>
+
+          <View style={tw`px-2 py-1 rounded-full bg-slate-200 dark:bg-slate-300`}>
+            <Text style={tw`text-[.51rem] font-bold text-center text-slate-500 text-slate-700`}>R${ sum }</Text>
+          </View>
 
         </View>
 

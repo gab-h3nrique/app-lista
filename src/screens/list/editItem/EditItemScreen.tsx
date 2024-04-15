@@ -41,23 +41,15 @@ const EditItemScreen = ({ selectedItem }: Props) => {
 
     if(!item) return;
 
-    if(item.quantity == 0) return setItem(()=> {return {...item, quantity: 0}})
-
-    setItem((prev: any)=> {
-
-      if(prev && prev.quantity) return {...prev, quantity: prev.quantity - 1}
-
-    })
+    setItem(prev=> ({...prev, quantity: prev.quantity > 1 ? prev.quantity - 1 : 1}))
 
   }
 
   function sumQuantity() {
 
-    setItem((e: any)=> {
+    if(!item) return;
 
-      if(e && e.quantity) return {...e, quantity: e.quantity + 1}
-
-    })
+    setItem(prev=> ({...prev, quantity: prev.quantity + 1 }))
 
   }
 

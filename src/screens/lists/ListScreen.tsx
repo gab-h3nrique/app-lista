@@ -155,9 +155,11 @@ const ListScreen = () => {
       </ScrollView> */}
 
       <Animated.View style={[tw`bottom-20 absolute  right-3`, { transform: [{ translateY: positionPlusButton }, { scale: scalePlusButton}] }]}>
+        
         <Button onPress={createNewList} style={tw`w-14 h-14 rounded-full flex justify-center items-center bg-violet-400`}>
           <PlusSvg height={36} width={36} fill={theme == 'dark' ? '#334155':'#FFFFFF'} style={{ transform: [{ rotateY: '180deg' }] }}/>
         </Button>
+
       </Animated.View>
 
 

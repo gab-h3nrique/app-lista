@@ -30,11 +30,21 @@ npm run android
 
 # OR using Yarn
 yarn android
+
+# run this to build apk for android
+npm run build
 ```
 
 ### For iOS
 
 ```bash
+
+# enter /ios folder
+cd ios
+
+# run this if throw an error
+brew link --overwrite cocoapods
+
 # using npm
 npx pod-install
 

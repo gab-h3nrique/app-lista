@@ -69,8 +69,8 @@ const CategoryScreen = () => {
           <PenSvg height={13} width={13} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'}/>
         </Button>
 
-        <Button onPress={() => {}} style={tw`w-16 h-16 rounded-full flex justify-center items-center bg-violet-400`} >
-          <SearchSvg height={30} width={30} fill={theme == 'dark' ? '#334155':'#FFFFFF'}/>
+        <Button onPress={() => {}} style={tw`w-14 h-14 rounded-full flex justify-center items-center bg-violet-400`} >
+          <SearchSvg height={28} width={28} fill={theme == 'dark' ? '#334155':'#FFFFFF'}/>
         </Button>
         
       </View>

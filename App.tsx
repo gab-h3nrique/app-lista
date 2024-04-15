@@ -16,7 +16,7 @@ import QuantityScreen from './src/screens/list/quantity/QuantityScreen';
 import { DataStorageProvider } from './src/context/StorageDataProvider';
 import ListProvider from './src/context/ListProvider';
 import EditItemScreen from './src/screens/list/editItem/EditItemScreen';
-import SelectListTopMap from './src/screens/map/SelectListTopMap';
+import SelectListToMap from './src/screens/map/SelectListToMap';
 
 function App(): JSX.Element {
   
@@ -34,7 +34,7 @@ function App(): JSX.Element {
   
                 <Stack name="HomeScreen" component={HomeScreen} />
                 <Stack name="ListScreen" component={ListScreen} />
-                <Stack name="SelectListTopMap" component={SelectListTopMap} />
+                <Stack name="SelectListTopMap" component={SelectListToMap} />
                 <Stack name="UserScreen" component={UserScreen} />
 
                 <Stack name="EditListScreen" component={EditListScreen} options={{style: {zIndex: 1} }}/>
