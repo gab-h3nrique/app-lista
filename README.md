@@ -51,8 +51,10 @@ npx pod-install
 # using npm
 npm run ios
 
-# OR using Yarn
-yarn ios
+
+# run this inside /ios if throw an error when 'npm run ios'
+rm -rf Pods && pod install    
+
 ```
 
 ###### FOLOW THIS STEPS ######
@@ -65,7 +67,7 @@ npm start
 open android studio e start the app
 
 # 3
-if this throw an error on app "red background erros", close app e open again
+# if this throw an error on app "red background erros", close app e open again
 
 # 4 - before you run this command, open the app in device (emulator) and run this code and press D in the terminal where you have been runned 'npm run start' and close without choose nothing
 npm run devtools
