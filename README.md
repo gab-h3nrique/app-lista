@@ -57,7 +57,7 @@ rm -rf Pods && pod install
 
 ```
 
-###### FOLOW THIS STEPS ######
+###### FOLOW THIS STEPS FOR BOTH OS (ANDROID/IOS) ######
 
 ```bash
 # 1

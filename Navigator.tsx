@@ -2,7 +2,7 @@
 
 import { View, Text, StyleSheet, Animated, Dimensions, NativeModules, PanResponder, StyleProp, TextStyle, BackHandler } from 'react-native'
 import React, { Children, ElementType, ReactNode, createContext, memo, useCallback, useContext, useEffect, useMemo, useRef, useState, useTransition } from 'react'
-import tw from 'twrnc';
+// import tw from 'twrnc';
 
 // const { UIManager } = NativeModules;
 
@@ -67,6 +67,7 @@ const Navigator = ({ tab: Tab, children }: Props) => {
     const [ config, setConfig ] = useState<Config>({rootElements, stacks: [rootElements[0]]})
 
     const positionScreen = useRef(new Animated.Value(0)).current;
+    const lastPositionScreen = useRef(new Animated.Value(0)).current;
 
     // const panResponder = React.useRef(
     //     PanResponder.create({
@@ -121,6 +122,9 @@ const Navigator = ({ tab: Tab, children }: Props) => {
             
         })().then(()=>{
 
+            lastPositionScreen.setValue(0);
+            Animated.timing(lastPositionScreen, { toValue: - (width / 4), duration: 250, useNativeDriver: true }).start();
+
             positionScreen.setValue(width);
             Animated.timing(positionScreen, { toValue: 0, duration: 250, useNativeDriver: true }).start();
 
@@ -167,6 +171,9 @@ const Navigator = ({ tab: Tab, children }: Props) => {
     },[])
 
     const pop = useCallback(() => {
+
+        lastPositionScreen.setValue(- (width / 4));
+        Animated.timing(lastPositionScreen, { toValue: 0, duration: 250, useNativeDriver: true }).start();
 
         Animated.timing(positionScreen, {
           toValue: width,
@@ -220,11 +227,16 @@ const Navigator = ({ tab: Tab, children }: Props) => {
 
                     let translateX: any = 0;
 
+
+
+                    if(index === (config.stacks.length -2)) translateX = lastPositionScreen
+
                     if(index === (config.stacks.length -1) && index > 0) translateX = positionScreen
 
                     return (
 
-                        <Animated.View key={`Animated-${stack.name}`} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }, style]}>
+                        // <Animated.View key={`Animated-${stack.name}`} style={[tw`flex w-full h-full absolute`, { transform: [{ translateX: translateX }] }, style]}>
+                        <Animated.View key={`Animated-${stack.name}`} style={{display: 'flex', width: '100%', height: '100%', position: 'absolute' ,transform: [{ translateX: translateX }]}}>
                             <Component key={`Screen-${stack.name}-${index}`} {...stack.props}/>
                         </Animated.View>
 

@@ -1,14 +1,21 @@
-import { View, Text, StyleSheet, Animated, PanResponder, Dimensions, useWindowDimensions, FlatList } from 'react-native'
+import { View, Text, StyleSheet, Animated, PanResponder, Dimensions, useWindowDimensions, FlatList, TextInput } from 'react-native'
 import React, { memo, useRef, useState } from 'react'
 import tw from '../../libs/tailwind'
 
-import MapView, {Marker, enableLatestRenderer, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Marker, enableLatestRenderer, PROVIDER_GOOGLE, Geojson} from 'react-native-maps';
+import Geolocation, { GeolocationResponse } from '@react-native-community/geolocation';
+
+
+
+
 import { useTheme } from '../../context/ThemeProvider';
 import Button from '../../components/buttons/Button';
 import ArrowSvg from '../../components/svg/icons/ArrowSvg';
 import { useNavigation } from '../../../Navigator';
 import ChevronSvg from '../../components/svg/icons/ChevronSvg';
+import Crosshairs from '../../components/svg/icons/Crosshairs';
 import MarketItem from './components/MarketItem';
+import SearchSvg from '../../components/svg/icons/SearchSvg';
 
 
 const MapScreen = () => {
@@ -17,13 +24,20 @@ const MapScreen = () => {
 
   const navigator = useNavigation()
 
+  const [ userLocation, setUserLocation ] = useState<GeolocationResponse>()
+
   
-  const initialRegion = {
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  }
+
+
+  // console.log(Geojson)
+
+
+
+  Geolocation.getCurrentPosition(location => setUserLocation(location));
+
+  console.log('coordss', userLocation)
+
+
   
   
   const sizeScreen = useRef(0)
@@ -50,7 +64,7 @@ const MapScreen = () => {
 
         
         // disabled for now
-        // setViewHeight((prev) => porcent + 10)
+        setViewHeight((prev) => porcent + 10)
         
         
         // const diference = (100 - ((gestureState.moveY / sizeScreen.current) * 100)) - initialHeight.current
@@ -106,8 +120,14 @@ const MapScreen = () => {
 
       <View style={tw`flex w-full h-full z-0`}>
 
-        <MapView provider={PROVIDER_GOOGLE} style={styles.map} initialRegion={initialRegion}>
-          <Marker coordinate={initialRegion} title='aa' description='bbb' image={{uri: 'https://cdn-icons-png.flaticon.com/512/3306/3306079.png'}}/>
+        <MapView provider={PROVIDER_GOOGLE} style={styles.map}  initialRegion={{     
+            latitude: -19.752537,
+            longitude: -43.958235,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }
+        }>
+          {/* <Marker coordinate={userLocation} title='aa' description='bbb' image={{uri: 'https://cdn-icons-png.flaticon.com/512/3306/3306079.png'}}/> */}
         </MapView>
         
       </View>
@@ -117,12 +137,12 @@ const MapScreen = () => {
         <View style={tw` flex flex-col items-center h-full w-full relative`}>
 
           <Button onPress={navigator.pop} style={tw`absolute -top-10 left-4 px-4 h-8 flex flex-row gap-2 rounded-full bg-slate-400 dark:bg-slate-700 flex items-center justify-center`} >
-            <Text style={tw`text-slate-400 dark:text-slate-300 text-[.8rem] font-bold`}>Distância</Text>
+            <Text style={tw`text-white dark:text-slate-300 text-[.8rem] font-bold`}>Distância</Text>
             <ChevronSvg height={15} width={15} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} marginLeft={"auto"} style={{ transform: [{ rotate: '90deg' }] }}/>
           </Button>
 
           <Button onPress={navigator.pop} style={tw`absolute -top-12 right-4 w-10 h-10 rounded-full bg-slate-400 dark:bg-slate-700 flex items-center justify-center`} >
-            <ArrowSvg height={20} width={20} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
+            <Crosshairs height={23} width={23} fill={theme == 'dark' ? '#CBD5E1':'#ffffff'} style={{ transform: [{ rotateY: '180deg' }] }}/>
           </Button>
 
           <View style={tw`w-100 p-2`} {...panResponder.panHandlers}>
@@ -132,7 +152,7 @@ const MapScreen = () => {
           <Text style={tw`pb-2 text-slate-400 dark:text-slate-300 text-[.9rem] font-bold`}>Compare os preços</Text>
 
 
-          <FlatList style={tw`flex w-full h-full `} 
+          <FlatList style={tw`flex w-full h-full`} 
           onScroll={()=> console.log('scrolling')}
           data={markets} 
           initialNumToRender={14} 
@@ -140,10 +160,16 @@ const MapScreen = () => {
           renderItem={({item, index}) => <MarketItem index={index} length={markets.length} onPress={() => console.log('pressed market')} />}
           />
 
+          <View style={tw`px-2 bottom-1 w-full absolute`}>
+            <View style={tw`w-full flex flex-row px-4 py-3 items-center rounded-[1rem] bottom-2 w-full bg-white dark:bg-slate-700`}>
+              <SearchSvg height={28} width={28} fill={theme == 'dark' ? '#CBD5E1':'#FFFFFF'}/>
+              <TextInput onChangeText={(text)=> console.log('sdflk')} style={tw`flex-1 text-slate-400 dark:text-slate-300 text-center font-bold text-[1.2rem]`}/>
+            </View>
+          </View>
 
         </View>
 
-      </Animated.View>
+      </Animated.View>    
 
     </View>
 
